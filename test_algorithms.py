@@ -1,6 +1,9 @@
 import unittest
 
-from algorithms import find_sum_combinations
+from algorithms import \
+    all_unique_characters, \
+    all_unique_characters_with_loop, \
+    find_sum_combinations
 
 
 class TestAlgorithms(unittest.TestCase):
@@ -79,6 +82,24 @@ class TestAlgorithms(unittest.TestCase):
                                                        [2, 0, 1, 0],
                                                        [2, 1, 0, 0],
                                                        [3, 0, 0, 0]])
+
+    def test_all_unique_characters(self):
+        """
+        Checks we correctly identify strings with unique and non-unique
+        combinations of characters
+        """
+        functions = all_unique_characters, all_unique_characters_with_loop
+
+        for f in functions:
+            self.assertTrue(f("abc"))
+            self.assertTrue(f("gdfneo"))
+            self.assertTrue(f("10x93pl2wd"))
+
+            self.assertFalse(f("aaa"))
+            self.assertFalse(f("aba"))
+            self.assertFalse(f("aab"))
+            self.assertFalse(f("abcdefdgh"))
+            self.assertFalse(f("3420120a"))
 
 
 if __name__ == '__main__':

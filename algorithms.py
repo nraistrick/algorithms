@@ -31,3 +31,38 @@ def find_sum_combinations(total, components, created=0):
             combinations.append([i] + sequence)
 
     return combinations
+
+
+def all_unique_characters(text):
+    """
+    Checks if all characters in a provided string are unique
+
+    * This implementation's runtime is O(n)
+    * Its space complexity is O(n)
+
+    :param str text: A provided input string
+    :rtype: bool
+    """
+    if len(text) == len(set(text)):
+        return True
+    return False
+
+
+def all_unique_characters_with_loop(text):
+    """
+    Checks if all characters in a provided string are unique
+
+    * This implementation's runtime is O(n^2)
+    * Its space complexity is O(1)
+
+    :param str text: A provided input string
+    :rtype: bool
+    """
+    for i in range(0, len(text)):
+        for j in range(0, len(text)):
+            if j == i:
+                continue
+            elif text[i] == text[j]:
+                return False
+
+    return True
