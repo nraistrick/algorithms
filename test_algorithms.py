@@ -4,6 +4,7 @@ from algorithms import \
     all_unique_characters, \
     all_unique_characters_with_loop, \
     find_sum_combinations, \
+    has_palindromic_permutation, \
     is_permutation, \
     is_permutation_with_inner_loop, \
     url_encode, \
@@ -135,6 +136,19 @@ class TestAlgorithms(unittest.TestCase):
         """
         self.assertEqual("Mr%20John%20Smith", url_encode_pythonic("Mr John Smith"))
         self.assertEqual("Mr%20David%20Barrimore", url_encode_pythonic("Mr David Barrimore"))
+
+    def test_has_palindromic_permutation(self):
+        """
+        Checks we correctly identify strings with a permutation
+        that is also a palindrome
+        """
+        self.assertTrue(has_palindromic_permutation("aba"))
+        self.assertTrue(has_palindromic_permutation("tact coa"))
+        self.assertTrue(has_palindromic_permutation("tact coa xyyx eedd"))
+
+        self.assertFalse(has_palindromic_permutation("abc"))
+        self.assertFalse(has_palindromic_permutation("dfg ada lob"))
+        self.assertFalse(has_palindromic_permutation("123ad"))
 
 
 if __name__ == '__main__':

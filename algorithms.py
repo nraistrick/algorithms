@@ -2,6 +2,8 @@
 A collection of generic algorithms for solving various programming tasks
 """
 
+from collections import Counter
+
 
 def find_sum_combinations(total, components, created=0):
     """
@@ -172,3 +174,35 @@ def url_encode_pythonic(text):
     """
     return text.replace(" ", "%20")
 
+
+def has_palindromic_permutation(text):
+    """
+    Checks if a provided string has a permutation which is a palindrome.
+
+    * This implementation's runtime is O(n)
+    * Its space complexity is O(n)
+
+    :param str text: The input string
+    :rtype: bool
+    """
+    # Ignore any spaces that are part of the string
+    text = text.replace(" ", "")
+
+    # Get character counts for every letter in the string
+    character_counts = Counter(text)
+
+    # For an even length string, every character must be in a pair.
+    # For an uneven length string, we can only have one single character
+    # which is not part of a pair.
+    single_character_allowed = (len(text) % 2 != 0)
+
+    for v in character_counts.values():
+        uneven_count = (v % 2 != 0)
+
+        if uneven_count and single_character_allowed:
+            single_character_allowed = False
+
+        elif uneven_count:
+            return False
+
+    return True
