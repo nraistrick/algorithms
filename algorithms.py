@@ -128,3 +128,47 @@ def is_permutation_with_inner_loop(first, second):
         return False
 
     return True
+
+
+def url_encode(text, length):
+    """
+    URL encodes spaces in a provided string. The string includes whitespace
+    appended to allow for expansion without dynamic array resizing. The length
+    of the original string is provided.
+
+    Given we know length is directly proportional to the provided text:
+    * This implementation's runtime is O(n^2)
+    * Its space complexity is O(1)
+
+    :param str text: The string which contains spaces to URL encode
+    :param int length: The length of the original string
+    :return: The URL-encoded string
+    :rtype: str
+    """
+    url_encoded_space = "%20"
+
+    characters = list(text)
+
+    for i in range(0, len(text)):
+        if characters[i].isspace():
+            for j in range(length - 1, i, -1):
+                characters[j + 2] = characters[j]
+            characters[i: i + len(url_encoded_space)] = list(url_encoded_space)
+            length += 2
+
+    return "".join(characters)
+
+
+def url_encode_pythonic(text):
+    """
+    URL encodes spaces in a provided string
+
+    * This implementation's runtime is O(n)
+    * Its space complexity is O(1)
+
+    :param str text: The string which contains spaces to URL encode
+    :return: The URL-encoded string
+    :rtype: str
+    """
+    return text.replace(" ", "%20")
+

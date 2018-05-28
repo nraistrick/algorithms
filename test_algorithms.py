@@ -5,7 +5,9 @@ from algorithms import \
     all_unique_characters_with_loop, \
     find_sum_combinations, \
     is_permutation, \
-    is_permutation_with_inner_loop
+    is_permutation_with_inner_loop, \
+    url_encode, \
+    url_encode_pythonic
 
 
 class TestAlgorithms(unittest.TestCase):
@@ -117,6 +119,22 @@ class TestAlgorithms(unittest.TestCase):
             self.assertFalse(f("abc", "hello"))
             self.assertFalse(f("abc", "abcd"))
             self.assertFalse(f("123def", "123dff"))
+
+    def test_url_encode(self):
+        """
+        Checks we correctly URL encode spaces using a non-pythonic
+        algorithm implementation
+        """
+        self.assertEqual("Mr%20John%20Smith", url_encode("Mr John Smith    ", 13))
+        self.assertEqual("Mr%20David%20Barrimore", url_encode("Mr David Barrimore    ", 18))
+
+    def test_url_encode_pythonic(self):
+        """
+        Checks we correctly URL encode spaces using a pythonic
+        algorithm implementation
+        """
+        self.assertEqual("Mr%20John%20Smith", url_encode_pythonic("Mr John Smith"))
+        self.assertEqual("Mr%20David%20Barrimore", url_encode_pythonic("Mr David Barrimore"))
 
 
 if __name__ == '__main__':
