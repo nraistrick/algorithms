@@ -3,6 +3,7 @@ import unittest
 from algorithms import \
     all_unique_characters, \
     all_unique_characters_with_loop, \
+    compress, \
     find_sum_combinations, \
     has_palindromic_permutation, \
     are_similar, \
@@ -170,6 +171,19 @@ class TestAlgorithms(unittest.TestCase):
         self.assertTrue(are_similar("", ""))
         self.assertTrue(are_similar("", "a"))
         self.assertTrue(are_similar("a", ""))
+
+    def test_compress(self):
+        """
+        Check the basic string compression works correctly
+        """
+        self.assertEqual("a2b3c4", compress("aabbbcccc"))
+        self.assertEqual("a4b1c4d1", compress("aaaabccccd"))
+        self.assertEqual("A2a2B3b3", compress("AAaaBBBbbb"))
+
+        # If the compression doesn't result in a shorter string, then we
+        # expect the original string to be returned
+        self.assertEqual("abcd", compress("abcd"))
+        self.assertEqual("aabbccdd", compress("aabbccdd"))
 
 
 if __name__ == '__main__':

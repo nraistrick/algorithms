@@ -263,3 +263,38 @@ def are_similar(first, second):
 
     return True
 
+
+def compress(text):
+    """
+    Compresses a string with repeated characters into a simple
+    compression format using character counts e.g.
+
+    >>> compress("aabbbcccc") == "a2b3c4"
+
+    * This implementation's runtime is O(n)
+    * Its space complexity is O(n)
+
+    :param str text: The string to be compressed
+    :return: The compressed string
+    :rtype: str
+    """
+    components = []
+    current = None
+    count = 0
+
+    for c in text:
+        if not current:
+            current = c
+
+        if c == current:
+            count += 1
+        else:
+            components.append(current + str(count))
+            current = c
+            count = 1
+
+    components.append(current + str(count))
+    compressed = "".join(components)
+
+    # Only return the compressed string if it's actually shorter
+    return compressed if len(compressed) < len(text) else text
