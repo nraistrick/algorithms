@@ -206,3 +206,60 @@ def has_palindromic_permutation(text):
             return False
 
     return True
+
+
+def are_similar(first, second):
+    """
+    Checks if two strings are the same or have at most one difference. The
+    difference can be a single extra/removed character or a differing character.
+
+    For the typical use case, we assume that the provided strings with have
+    approximately the same length of n. This allows us to estimate the
+    runtime.
+
+    * This implementation's runtime is O(n)
+    * Its space complexity is O(1)
+
+    :param str first: The first string
+    :param str second: The second string
+    :rtype: bool
+    """
+    i = j = 0
+    max_i = len(first) - 1
+    max_j = len(second) - 1
+    difference_found = False
+
+    while True:
+        # Check to see if we've successfully reached the end of both strings
+        if i > max_i and j > max_j:
+            break
+
+        # Adjust for additional characters at the end of the string
+        elif i > max_i:
+            i -= 1
+        elif j > max_j:
+            j -= 1
+
+        # Note the slice allows us to request a value at a
+        # non-existent index without throwing an exception
+        if first[i: i + 1] != second[j: j + 1]:
+            if difference_found:
+                return False
+
+            difference_found = True
+
+            # Handle the situation where an extra character has been added
+            # or removed. Try adjust the pointers so they are referencing
+            # matching characters for the next iteration.
+            if j < max_j and first[i] == second[j + 1]:
+                j += 1
+                continue
+            elif i < max_i and first[i + 1] == second[j]:
+                i += 1
+                continue
+
+        i += 1
+        j += 1
+
+    return True
+

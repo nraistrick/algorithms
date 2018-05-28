@@ -5,6 +5,7 @@ from algorithms import \
     all_unique_characters_with_loop, \
     find_sum_combinations, \
     has_palindromic_permutation, \
+    are_similar, \
     is_permutation, \
     is_permutation_with_inner_loop, \
     url_encode, \
@@ -149,6 +150,26 @@ class TestAlgorithms(unittest.TestCase):
         self.assertFalse(has_palindromic_permutation("abc"))
         self.assertFalse(has_palindromic_permutation("dfg ada lob"))
         self.assertFalse(has_palindromic_permutation("123ad"))
+
+    def test_is_similar(self):
+        """
+        Checks we correctly identify strings that are no more than one move
+        away from being the same as another string
+        """
+        # Typical usage
+        self.assertTrue(are_similar("pale", "ple"))
+        self.assertTrue(are_similar("ple", "pale"))
+        self.assertTrue(are_similar("pales", "pale"))
+        self.assertTrue(are_similar("pale", "bale"))
+
+        self.assertFalse(are_similar("no", "true"))
+        self.assertFalse(are_similar("abcd", "abcdef"))
+        self.assertFalse(are_similar("pale", "bake"))
+
+        # Edge cases
+        self.assertTrue(are_similar("", ""))
+        self.assertTrue(are_similar("", "a"))
+        self.assertTrue(are_similar("a", ""))
 
 
 if __name__ == '__main__':
