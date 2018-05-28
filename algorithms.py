@@ -66,3 +66,65 @@ def all_unique_characters_with_loop(text):
                 return False
 
     return True
+
+
+def is_permutation(first, second):
+    """
+    Checks if the provided strings are permutations of each other
+    i.e. they contain the same characters, but in a different order
+
+    If we define the length the first string as 'a' and the length of the
+    second string as 'b':
+    * This implementation's runtime is O(ab)
+    * Its space complexity is O(b)
+
+    :param str first: The first string
+    :param str second: The second string
+    :rtype: bool
+    """
+    characters = list(second)
+
+    for c in first:
+        if c not in characters:
+            return False
+        characters.remove(c)
+
+    remaining_characters = (len(characters) != 0)
+    if remaining_characters:
+        return False
+
+    return True
+
+
+def is_permutation_with_inner_loop(first, second):
+    """
+    Checks if the provided strings are permutations of each other
+    i.e. they contain the same characters, but in a different order
+
+    If we define the length the first string as 'a' and the length of the
+    second string as 'b':
+    * This implementation's runtime is O(ab)
+    * Its space complexity is O(b)
+
+    :param str first: The first string
+    :param str second: The second string
+    :rtype: bool
+    """
+    characters = list(second)
+
+    for c in first:
+        exists = False
+        for sc in characters:
+            if c == sc:
+                exists = True
+                characters.remove(c)
+                break
+
+        if not exists:
+            return False
+
+    remaining_characters = (len(characters) != 0)
+    if remaining_characters:
+        return False
+
+    return True

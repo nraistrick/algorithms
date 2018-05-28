@@ -3,7 +3,9 @@ import unittest
 from algorithms import \
     all_unique_characters, \
     all_unique_characters_with_loop, \
-    find_sum_combinations
+    find_sum_combinations, \
+    is_permutation, \
+    is_permutation_with_inner_loop
 
 
 class TestAlgorithms(unittest.TestCase):
@@ -100,6 +102,21 @@ class TestAlgorithms(unittest.TestCase):
             self.assertFalse(f("aab"))
             self.assertFalse(f("abcdefdgh"))
             self.assertFalse(f("3420120a"))
+
+    def test_is_permutation(self):
+        """
+        Checks we correctly identify strings that are permutations of each other
+        """
+        functions = is_permutation, is_permutation_with_inner_loop
+
+        for f in functions:
+            self.assertTrue(f("abc", "bac"))
+            self.assertTrue(f("hello", "eollh"))
+            self.assertTrue(f("123def", "f2ed31"))
+
+            self.assertFalse(f("abc", "hello"))
+            self.assertFalse(f("abc", "abcd"))
+            self.assertFalse(f("123def", "123dff"))
 
 
 if __name__ == '__main__':
