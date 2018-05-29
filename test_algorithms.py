@@ -9,6 +9,7 @@ from algorithms import \
     are_similar, \
     is_permutation, \
     is_permutation_with_inner_loop, \
+    rotate_clockwise, \
     url_encode, \
     url_encode_pythonic
 
@@ -184,6 +185,18 @@ class TestAlgorithms(unittest.TestCase):
         # expect the original string to be returned
         self.assertEqual("abcd", compress("abcd"))
         self.assertEqual("aabbccdd", compress("aabbccdd"))
+
+    def test_rotate(self):
+        """
+        Checks image rotation works correctly
+        """
+        # For square images
+        self.assertEqual([[0, 1], [1, 0]], rotate_clockwise([[1, 0], [0, 1]]))
+        self.assertEqual([[0, 1, 1], [1, 0, 1], [0, 1, 1]], rotate_clockwise([[0, 1, 0], [1, 0, 1], [1, 1, 1]]))
+
+        # For non-square images
+        self.assertEqual([[1, 0, 1], [0, 0, 1]], rotate_clockwise([[0, 1], [0, 0], [1, 1]]))
+        self.assertEqual([[1, 1], [0, 0], [1, 0]], rotate_clockwise([[1, 0, 1], [0, 0, 1]]))
 
 
 if __name__ == '__main__':

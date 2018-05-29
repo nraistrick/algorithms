@@ -298,3 +298,25 @@ def compress(text):
 
     # Only return the compressed string if it's actually shorter
     return compressed if len(compressed) < len(text) else text
+
+
+def rotate_clockwise(image):
+    """
+    Rotates an image 90 degrees clockwise
+
+    * This implementation's runtime is O(n)
+    * Its space complexity is O(n)
+
+    :param list[list[int]] image: The provided square image
+    :return: The rotated image
+    :rtype: list[list[int]]
+    """
+    x_max = len(image)
+    y_max = len(image[0])
+    rotated = [[0 for _ in range(0, x_max)] for _ in range(0, y_max)]
+
+    for x in range(0, x_max):
+        for y in range(0, y_max):
+            rotated[y_max - 1 - y][x] = image[x][y]
+
+    return rotated
