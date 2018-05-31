@@ -10,6 +10,7 @@ from algorithms import \
     is_permutation, \
     is_permutation_with_inner_loop, \
     rotate_clockwise, \
+    rotate_clockwise_in_place, \
     url_encode, \
     url_encode_pythonic
 
@@ -197,6 +198,19 @@ class TestAlgorithms(unittest.TestCase):
         # For non-square images
         self.assertEqual([[1, 0, 1], [0, 0, 1]], rotate_clockwise([[0, 1], [0, 0], [1, 1]]))
         self.assertEqual([[1, 1], [0, 0], [1, 0]], rotate_clockwise([[1, 0, 1], [0, 0, 1]]))
+
+    def test_rotate_in_place(self):
+        """
+        Checks in-place image rotation works correctly
+        """
+        self.assertEqual([[0, 1], [1, 0]],
+                         rotate_clockwise_in_place([[1, 0], [0, 1]]))
+
+        self.assertEqual([[0, 1, 1], [1, 0, 1], [0, 1, 1]],
+                         rotate_clockwise_in_place([[0, 1, 0], [1, 0, 1], [1, 1, 1]]))
+
+        self.assertEqual([[0, 0, 1, 1], [1, 1, 1, 1], [1, 0, 0, 1], [0, 1, 0, 1]],
+                         rotate_clockwise_in_place([[0, 1, 1, 0], [1, 0, 1, 0], [0, 0, 1, 1], [1, 1, 1, 1]]))
 
 
 if __name__ == '__main__':

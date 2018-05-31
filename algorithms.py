@@ -3,6 +3,7 @@ A collection of generic algorithms for solving various programming tasks
 """
 
 from collections import Counter
+from math import ceil, floor
 
 
 def find_sum_combinations(total, components, created=0):
@@ -320,3 +321,81 @@ def rotate_clockwise(image):
             rotated[y_max - 1 - y][x] = image[x][y]
 
     return rotated
+
+
+def rotate_clockwise_in_place(image):
+    """
+    Rotates a square image 90 degrees clockwise without creating
+    a brand new image
+
+    To complete this operation, we work under the principle that pixels
+    in a square image work in groups of four during rotation. For example,
+    let's say we have an 3x3 image of pixels, where each pixel is marked
+    as its respective (x, y) coordinate.
+
+                        x
+      +----------------->
+      | (0,0) (1,0) (2,0)
+      |
+      | (0,1) (1,1) (2,1)
+      |
+    y V (0,2) (1,2) (2,2)
+
+    When rotating this image by 90 degrees, there are two main loops that can
+    be identified. Each of these loops represents the next location of the
+    previous pixel
+
+          Loop 1
+          +-------------------+
+          |                   |
+    +---(0,0)     (1,0)     (2,0)---+
+    |             |   |             |
+    |     Loop 2  |   |             |
+    |     +-------+   +-------+     |
+    |     |                   |     |
+    |   (0,1)     (1,1)     (2,1)   |
+    |     |                   |     |
+    |     +-------+   +-------+     |
+    |             |   |             |
+    |             |   |             |
+    +---(0,2)     (1,2)     (2,2)---+
+          |                   |
+          +-------------------+
+
+    The aim of this method is to identify a starting pixel from each of the
+    unique loops, and then rotate the pixels within each loop. In this case,
+    the two starting pixels would be (0,0) and (0,1).
+
+    * This implementation's runtime is O(n)
+    * Its space complexity is O(1)
+
+    :param list[list[int]] image: The provided square image
+    :return: The rotated image
+    :rtype: list[list[int]]
+    """
+    x_max = len(image)
+    y_max = len(image[0])
+
+    x_starting_pixels = int(ceil(x_max/2))
+    y_starting_pixels = int(floor(y_max/2))
+    pixels_per_loop = 4
+
+    # Iterate through all the possible starting pixels
+    for x in range(0, x_starting_pixels):
+        for y in range(0, y_starting_pixels):
+
+            current_x, current_y = x, y
+            temp = None
+
+            # Rotate each pixel in an identified loop
+            for _ in range(0, pixels_per_loop):
+                next_x, next_y = (y_max - 1 - current_y), current_x
+                if temp is None:
+                    temp = image[next_x][next_y]
+                    image[next_x][next_y] = image[current_x][current_y]
+                else:
+                    temp, image[next_x][next_y] = image[next_x][next_y], temp
+
+                current_x, current_y = next_x, next_y
+
+    return image
