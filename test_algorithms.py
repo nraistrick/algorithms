@@ -12,7 +12,8 @@ from algorithms import \
     rotate_clockwise, \
     rotate_clockwise_in_place, \
     url_encode, \
-    url_encode_pythonic
+    url_encode_pythonic, \
+    zero_matrix
 
 
 class TestAlgorithms(unittest.TestCase):
@@ -211,6 +212,17 @@ class TestAlgorithms(unittest.TestCase):
 
         self.assertEqual([[0, 0, 1, 1], [1, 1, 1, 1], [1, 0, 0, 1], [0, 1, 0, 1]],
                          rotate_clockwise_in_place([[0, 1, 1, 0], [1, 0, 1, 0], [0, 0, 1, 1], [1, 1, 1, 1]]))
+
+    def test_zero_matrix(self):
+        """
+        Checks that corresponding rows and columns are correctly zeroed for
+        any identified zero elements
+        """
+        self.assertEqual([[1, 1, 0], [0, 0, 0], [1, 1, 0]],
+                         zero_matrix([[1, 1, 1], [1, 1, 0], [1, 1, 1]]))
+
+        self.assertEqual([[0, 1, 1, 0], [0, 0, 0, 0], [0, 1, 1, 0], [0, 0, 0, 0]],
+                         zero_matrix([[1, 1, 1, 1], [1, 1, 1, 0], [1, 1, 1, 1], [0, 1, 1, 1]]))
 
 
 if __name__ == '__main__':

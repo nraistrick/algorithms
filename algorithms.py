@@ -399,3 +399,34 @@ def rotate_clockwise_in_place(image):
                 current_x, current_y = next_x, next_y
 
     return image
+
+
+def zero_matrix(matrix):
+    """
+    If a matrix value is equal to zero, this algorithm zeros out every
+    value in its corresponding row and column
+
+    * This implementation's runtime is O(n)
+    * Its space complexity is O(n)
+
+    :param list[list[int]] matrix: The provided matrix
+    :rtype: list[list[int]]
+    """
+    # Create a deep copy of the matrix
+    zeroed_matrix = [[y for y in x] for x in matrix]
+
+    x_length = len(matrix)
+    y_length = len(matrix[0])
+
+    for x in range(x_length):
+        for y in range(y_length):
+
+            if matrix[x][y] != 0:
+                continue
+
+            for xi in range(x_length):
+                zeroed_matrix[xi][y] = 0
+            for yi in range(y_length):
+                zeroed_matrix[x][yi] = 0
+
+    return zeroed_matrix
