@@ -430,3 +430,105 @@ def zero_matrix(matrix):
                 zeroed_matrix[x][yi] = 0
 
     return zeroed_matrix
+
+
+def is_rotation(first, second):
+    """
+    Checks if the provided strings are rotations of each other
+
+    * We know this algorithm enforces both input strings to have the same length of n
+    * We know the runtime of the underlying algorithm to find the rotation offset is
+    O(n(n - 1) + n(n + 1 - n/2))
+
+    Hence, this implementation's runtime is O(n(n - 1) + n(n + 1 - n/2))
+
+    * We know the algorithm stores the rotated string in a new variable
+
+    Hence, its space complexity is O(n)
+
+    :param str first: The first string
+    :param str second: The second string
+    :rtype: bool
+    """
+    if len(first) != len(second):
+        raise ValueError("The provided strings need to be the same length")
+
+    offset = find_rotation_offset(first, second)
+    rotated = second[offset:] + second[:offset]
+
+    return True if first == rotated else False
+
+
+def find_rotation_offset(first, second):
+    """
+    Finds how many right rotations are required to translate the first string
+    to the second string
+
+    * We know this algorithm enforces both input strings to have the same length of n
+    * We also know the runtime of find_unique_substrings is approximately
+      = O(a * (a - 1)/2 * (b - 1)/2)  [which can now be simplified down to]
+      = O(n * (n - 1)/2 * (n - 1)/2)
+      = O(n * (n - 1))
+    * We make the simplistic assumptions that the average number of unique
+    substrings returned is equal to n and the average substring length is n/2.
+    Therefore, for n substrings, we have (n + 1 - n/2) iterations.
+
+    Hence, This implementation's runtime is approximately O(n(n - 1) + n(n + 1 - n/2))
+
+    * We know for any loop that the algorithm stores the current substring
+    which we assume has an average length of n/2
+
+    Therefore, its space complexity is approximately O(n/2)
+
+    :param str first: The first string
+    :param str second: The second string
+    :return: The number of right rotations to translate the first to the second message
+    :rtype: int
+    """
+    if len(first) != len(second):
+        raise ValueError("The provided strings need to be the same length")
+
+    if first == second:
+        return 0
+
+    for unique_substring in find_unique_substrings(first, second):
+        for i in range(len(second) + 1 - len(unique_substring)):
+            if second[i: i + len(unique_substring)] == unique_substring:
+                return i
+
+    raise Exception("The two provided strings are not rotated versions of each other")
+
+
+def find_unique_substrings(first, second):
+    """
+    For two strings, find the unique substrings that are present only once in
+    both strings. In this case, we produce the substrings in order of shortest
+    first.
+
+    To calculate the runtime of this algorithm, we define the length the first
+    string as 'a' and the length of the second string as 'b'. We can see that
+    there are approximately 'a' outer loops, and determine that there are two
+    further nested inner loops with an average number of iterations of (a-1)/2
+    and (b-1)/2 respectively.
+
+    * This implementation's runtime is approximately O(a * (a-1)/2 * (b-1)/2)
+    * Its space complexity is O(1)
+
+    :param str first: The first string
+    :param str second: The second string
+    :rtype: str
+    """
+    for unique_character_count in range(1, len(first)):
+        for f in range(len(first) + 1 - unique_character_count):
+            unique_chars = first[f: f + unique_character_count]
+
+            unique = False
+            for k in range(len(second) + 1 - unique_character_count):
+                if unique_chars == second[k: k + unique_character_count]:
+                    if unique:
+                        unique = False
+                        break
+                    unique = True
+
+            if unique:
+                yield unique_chars

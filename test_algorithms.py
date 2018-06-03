@@ -4,11 +4,14 @@ from algorithms import \
     all_unique_characters, \
     all_unique_characters_with_loop, \
     compress, \
+    find_rotation_offset, \
     find_sum_combinations, \
+    find_unique_substrings, \
     has_palindromic_permutation, \
     are_similar, \
     is_permutation, \
     is_permutation_with_inner_loop, \
+    is_rotation, \
     rotate_clockwise, \
     rotate_clockwise_in_place, \
     url_encode, \
@@ -223,6 +226,51 @@ class TestAlgorithms(unittest.TestCase):
 
         self.assertEqual([[0, 1, 1, 0], [0, 0, 0, 0], [0, 1, 1, 0], [0, 0, 0, 0]],
                          zero_matrix([[1, 1, 1, 1], [1, 1, 1, 0], [1, 1, 1, 1], [0, 1, 1, 1]]))
+
+    def test_find_unique_substrings(self):
+        """
+        Checks that all unique substrings are found for the provided pair
+        of strings
+        """
+        self.assertEqual(["h", "e", "o", "he", "ll", "lo", "llo"],
+                         [i for i in find_unique_substrings("hello", "llohe")])
+
+        self.assertEqual(["b", "ab"],
+                         [i for i in find_unique_substrings("aab", "aba")])
+
+        self.assertEqual(["d", "aaa", "bbb"],
+                         [i for i in find_unique_substrings("aaabbbcd", "bbbdaaa")])
+
+        self.assertEqual([],
+                         [i for i in find_unique_substrings("aaaaa", "aaaaa")])
+
+    def test_find_rotation_offset(self):
+        """
+        Checks the rotation offset between two strings is calculated correctly
+        """
+        self.assertEqual(0, find_rotation_offset("ab", "ab"))
+        self.assertEqual(0, find_rotation_offset("aaaaa", "aaaaa"))
+        self.assertEqual(1, find_rotation_offset("ab", "ba"))
+        self.assertEqual(2, find_rotation_offset("hello", "lohel"))
+        self.assertEqual(3, find_rotation_offset("abcde", "cdeab"))
+        self.assertEqual(4, find_rotation_offset("abcde", "bcdea"))
+
+        self.assertRaises(Exception, find_rotation_offset, "abc", "aaa")
+
+    def test_is_rotation(self):
+        """
+        Checks if two strings are identical except that they have had some
+        of their characters rotated
+        """
+        self.assertTrue(is_rotation("abc", "bca"))
+        self.assertTrue(is_rotation("abcde", "cdeab"))
+        self.assertTrue(is_rotation("helloworld", "worldhello"))
+
+        self.assertFalse(is_rotation("abc", "bac"))
+        self.assertFalse(is_rotation("abcde", "acbde"))
+        self.assertFalse(is_rotation("helloworld", "worlhdello"))
+
+        self.assertRaises(ValueError, is_rotation, "helloworld", "worldello")
 
 
 if __name__ == '__main__':
