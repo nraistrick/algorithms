@@ -235,3 +235,166 @@ def partition_list(node, value):
             node = head
         else:
             node = node.child
+
+
+def sum_reverse_numbers(first, second):
+    """
+    Sums two numbers represented by linked-lists. Each node in a list
+    represents a single digit in base 10 number with the least significant
+    digit coming first.
+
+    * This implementation's runtime is O(n)
+    * Its space complexity is O(1)
+
+    :param Node first: The head node of the first number
+    :param second: The head node of the second number
+    :return: The summed number as a linked-list
+    :rtype: Node
+    """
+    first_number = get_reverse_number(first)
+    second_number = get_reverse_number(second)
+    result = first_number + second_number
+
+    return create_reverse_number(result)
+
+
+def create_reverse_number(value):
+    """
+    Creates a linked-list representation of a number. The least significant
+    digit comes first.
+
+    * This implementation's runtime is O(n)
+    * Its space complexity is O(1)
+
+    :param int value: The provided number
+    :return: A linked-list representation of the number
+    :rtype: Node
+    """
+    if value <= 0:
+        raise ValueError("Must be given a value that's greater than 0")
+
+    # Break the value down into its digits
+    base = 10
+    digits = []
+    while True:
+        digits.append(value % base)
+        value /= base
+        if value == 0:
+            break
+
+    # Create a linked list from the digits
+    head = node = Node(digits[0])
+    for d in digits[1:]:
+        node.child = Node(d)
+        node = node.child
+
+    return head
+
+
+def get_reverse_number(node):
+    """
+    Get's a number from a singly-linked list where each node represents
+    a single digit in a base 10 number. The least significant digit comes
+    first.
+
+    * This implementation's runtime is O(n)
+    * Its space complexity is O(1)
+
+    :param Node node: The head of the linked-list
+    :return: The actual value
+    :rtype: int
+    """
+    total = 0
+    multiple = 1
+    while node:
+        total += node.value * multiple
+        multiple *= 10
+        node = node.child
+
+    return total
+
+
+def sum_numbers(first, second):
+    """
+    Sums two numbers represented by linked-lists. Each node in a list
+    represents a single digit in base 10 number with the most significant
+    digit coming first.
+
+    * This implementation's runtime is O(n)
+    * Its space complexity is O(1)
+
+    :param Node first: The head node of the first number
+    :param second: The head node of the second number
+    :return: The summed number as a linked-list
+    :rtype: Node
+    """
+    first_number = get_number(first)
+    second_number = get_number(second)
+    result = first_number + second_number
+
+    return create_number(result)
+
+
+def create_number(value):
+    """
+    Creates a linked-list representation of a number. The most significant
+    digit comes first.
+
+    * This implementation's runtime is O(n)
+    * Its space complexity is O(1)
+
+    :param int value: The provided number
+    :return: A linked-list representation of the number
+    :rtype: Node
+    """
+    if value <= 0:
+        raise ValueError("Must be given a value that's greater than 0")
+
+    # Break the value down into its digits
+    base = 10
+    digits = []
+    while True:
+        digits.append(value % base)
+        value /= base
+        if value == 0:
+            break
+
+    # Create a linked list from the digits
+    head = node = Node(digits[-1])
+    for d in digits[-2::-1]:
+        node.child = Node(d)
+        node = node.child
+
+    return head
+
+
+def get_number(node):
+    """
+    Get's a number from a singly-linked list where each node represents
+    a single digit in a base 10 number. The most significant digit comes
+    first.
+
+    * This implementation's runtime is O(n)
+    * Its space complexity is O(1)
+
+    :param Node node: The head of the linked-list
+    :return: The actual value
+    :rtype: int
+    """
+    head = node
+
+    digits = 1
+    while node.child:
+        node = node.child
+        digits += 1
+
+    node = head
+    total = 0
+    multiple = 10 ** (digits - 1)
+
+    while node:
+        total += node.value * multiple
+        multiple /= 10
+        node = node.child
+
+    return total

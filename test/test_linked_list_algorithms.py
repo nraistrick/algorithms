@@ -1,8 +1,12 @@
 import unittest
 
 from linked_list_algorithms import \
+    create_number, \
+    create_reverse_number, \
     delete_middle_node, \
     get_kth_to_last_element, \
+    get_number, \
+    get_reverse_number, \
     get_unique, \
     get_unique_reverse, \
     Node, \
@@ -10,7 +14,9 @@ from linked_list_algorithms import \
     remove_duplicates, \
     remove_duplicates_with_sorting, \
     remove_duplicates_without_buffer, \
-    sort
+    sort, \
+    sum_numbers, \
+    sum_reverse_numbers
 
 
 class TestLinkedListAlgorithms(unittest.TestCase):
@@ -144,6 +150,76 @@ class TestLinkedListAlgorithms(unittest.TestCase):
         expected_values = (3, 2, 1, 5, 8, 5, 10)
         head = self.create_linked_list(values)
         partition_list(head, 5)
+        self.verify_linked_list_values(head, expected_values)
+
+    def test_sum_reverse_numbers(self):
+        """
+        Checks we correctly sum together two numbers that are represented by
+        singly linked-lists with each node representing a single digit of
+        the number. The least significant digit comes first.
+        """
+        first = self.create_linked_list((7, 1, 6))
+        second = self.create_linked_list((5, 9, 2))
+        self.verify_linked_list_values(sum_reverse_numbers(first, second), (2, 1, 9))
+
+    def test_get_reverse_number(self):
+        """
+        Checks we can recreate a number from a linked-list of values
+        in reverse digit order
+        """
+        values = (7, 1, 6)
+        head = self.create_linked_list(values)
+        self.assertEqual(617, get_reverse_number(head))
+
+        values = (5, 9, 2)
+        head = self.create_linked_list(values)
+        self.assertEqual(295, get_reverse_number(head))
+
+    def test_create_reverse_number(self):
+        """
+        Checks we can successfully turn a number into its equivalent linked
+        list representation where each node contains one digit of the number
+        in base 10. The least significant digit comes first.
+        """
+        self.assertRaises(ValueError, create_reverse_number, 0)
+
+        expected_values = (2, 1, 9)
+        head = create_reverse_number(912)
+        self.verify_linked_list_values(head, expected_values)
+
+    def test_sum_numbers(self):
+        """
+        Checks we correctly sum together two numbers that are represented by
+        singly linked-lists with each node representing a single digit of
+        the number. The least significant digit comes first.
+        """
+        first = self.create_linked_list((6, 1, 7))
+        second = self.create_linked_list((2, 9, 5))
+        self.verify_linked_list_values(sum_numbers(first, second), (9, 1, 2))
+
+    def test_get_number(self):
+        """
+        Checks we can recreate a number from a linked-list of values
+        in normal digit order
+        """
+        values = (6, 1, 7)
+        head = self.create_linked_list(values)
+        self.assertEqual(617, get_number(head))
+
+        values = (2, 9, 5)
+        head = self.create_linked_list(values)
+        self.assertEqual(295, get_number(head))
+
+    def test_create_number(self):
+        """
+        Checks we can successfully turn a number into its equivalent linked
+        list representation where each node contains one digit of the number
+        in base 10. The most significant digit comes first.
+        """
+        self.assertRaises(ValueError, create_number, 0)
+
+        expected_values = (9, 1, 2)
+        head = create_number(912)
         self.verify_linked_list_values(head, expected_values)
 
     @staticmethod
