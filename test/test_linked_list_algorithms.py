@@ -6,6 +6,7 @@ from linked_list_algorithms import \
     get_unique, \
     get_unique_reverse, \
     Node, \
+    partition_list, \
     remove_duplicates, \
     remove_duplicates_with_sorting, \
     remove_duplicates_without_buffer, \
@@ -132,6 +133,17 @@ class TestLinkedListAlgorithms(unittest.TestCase):
         expected_values = (1, 2, 3, 5, 6, 7, 8)
         head = self.create_linked_list(values)
         delete_middle_node(head)
+        self.verify_linked_list_values(head, expected_values)
+
+    def test_partition_list(self):
+        """
+        Checks we correctly partition a list into two halves based around
+        a specific value
+        """
+        values = (3, 5, 8, 5, 10, 2, 1)
+        expected_values = (3, 2, 1, 5, 8, 5, 10)
+        head = self.create_linked_list(values)
+        partition_list(head, 5)
         self.verify_linked_list_values(head, expected_values)
 
     @staticmethod

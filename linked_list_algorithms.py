@@ -214,3 +214,24 @@ def delete_middle_node(node):
             head = head.child
 
     head.child = head.child.child
+
+
+def partition_list(node, value):
+    """
+    Partitions a singly-linked list around a specific value so that the
+    left half of the list contains values smaller than the provided value and
+    the right half of the list contains values bigger than the provided value
+
+    * This implementation's runtime is O(n^2)
+    * Its space complexity is O(1)
+
+    :param Node node: The head of the linked-list
+    :param int value: The value to partition around
+    """
+    head = node
+    while node.child:
+        if node.value >= value > node.child.value:
+            node.value, node.child.value = node.child.value, node.value
+            node = head
+        else:
+            node = node.child
