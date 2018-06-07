@@ -1,6 +1,7 @@
 import unittest
 
 from linked_list_algorithms import \
+    delete_middle_node, \
     get_kth_to_last_element, \
     get_unique, \
     get_unique_reverse, \
@@ -108,6 +109,30 @@ class TestLinkedListAlgorithms(unittest.TestCase):
         for i in range(available_elements):
             element = get_kth_to_last_element(head, i)
             self.assertEqual(values[available_elements - i - 1], element.value)
+
+    def test_delete_middle_node(self):
+        """
+        Checks we correctly delete the middle node of a singly linked-list
+        """
+        values = 1,
+        head = self.create_linked_list(values)
+        self.assertRaises(ValueError, delete_middle_node, head)
+
+        values = (1, 2)
+        head = self.create_linked_list(values)
+        self.assertRaises(ValueError, delete_middle_node, head)
+
+        values = (1, 2, 3)
+        expected_values = (1, 3)
+        head = self.create_linked_list(values)
+        delete_middle_node(head)
+        self.verify_linked_list_values(head, expected_values)
+
+        values = (1, 2, 3, 4, 5, 6, 7, 8)
+        expected_values = (1, 2, 3, 5, 6, 7, 8)
+        head = self.create_linked_list(values)
+        delete_middle_node(head)
+        self.verify_linked_list_values(head, expected_values)
 
     @staticmethod
     def create_linked_list(values):

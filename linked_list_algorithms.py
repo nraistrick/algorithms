@@ -191,3 +191,26 @@ def get_kth_to_last_element(node, k):
         element_to_find -= 1
 
     return node
+
+
+def delete_middle_node(node):
+    """
+    Removes the middle node from a singly linked-list
+
+    * This implementation's runtime is O(n)
+    * Its space complexity is O(1)
+
+    :param Node node: The head of the linked-list
+    """
+    if not node.child or not node.child.child:
+        raise ValueError("Provided linked-list must have 3 or more elements")
+
+    head = node
+    node = node.child.child
+    while node:
+        node = node.child
+        if node and node.child:
+            node = node.child
+            head = head.child
+
+    head.child = head.child.child
