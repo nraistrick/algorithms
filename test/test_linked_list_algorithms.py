@@ -1,6 +1,7 @@
 import unittest
 
 from linked_list_algorithms import \
+    get_kth_to_last_element, \
     get_unique, \
     get_unique_reverse, \
     Node, \
@@ -93,6 +94,20 @@ class TestLinkedListAlgorithms(unittest.TestCase):
         head = get_unique_reverse(head)
 
         self.verify_linked_list_values(head, duplicates_removed)
+
+    def test_get_kth_to_last_element(self):
+        """
+        Checks we can correctly get the kth to last element from a
+        singly linked-list
+        """
+        values = (1, 2, 3, 4, 5)
+
+        head = self.create_linked_list(values)
+
+        available_elements = len(values)
+        for i in range(available_elements):
+            element = get_kth_to_last_element(head, i)
+            self.assertEqual(values[available_elements - i - 1], element.value)
 
     @staticmethod
     def create_linked_list(values):

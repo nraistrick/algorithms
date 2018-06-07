@@ -159,3 +159,35 @@ def get_unique_reverse(node):
         return node
     else:
         return unique
+
+
+def get_kth_to_last_element(node, k):
+    """
+    Get's the kth to last element in a linked list
+
+    * This implementation's runtime is O(n)
+    * Its space complexity is O(1)
+
+    :param Node node: The head of a linked list
+    :param int k: The kth to last element
+    :return: The kth to last node
+    :rtype: Node
+    """
+    if node is None:
+        raise ValueError("Must be passed a valid linked-list")
+
+    head = node
+    length = 0
+
+    while node:
+        length += 1
+        node = node.child
+
+    element_to_find = length - k - 1
+    node = head
+
+    while element_to_find:
+        node = node.child
+        element_to_find -= 1
+
+    return node
