@@ -505,3 +505,78 @@ def is_palindrome_doubly(node):
             end = end.parent
 
     return palindrome
+
+
+def lists_intersect(first, second):
+    """
+    Checks if two singly linked-lists intersect
+
+    * This implementation's runtime is O(a + b)
+    * Its space complexity is O(1)
+
+    :param first: The head of the first linked-list
+    :param second: The head of the second linked-list
+    :return: The intersecting node if one exists
+    :rtype: Node
+    """
+    f = first
+    s = second
+    first_length = second_length = 1
+
+    # Find the length of each list
+    while f.child or s.child:
+        if f.child:
+            f = f.child
+            first_length += 1
+        if s.child:
+            s = s.child
+            second_length += 1
+
+    # If the last node is not the same, then we know
+    # that the lists do not intersect
+    if f is not s:
+        return
+
+    # Normalise so we start at the same distance from the end for both lists.
+    # It's not possible for the lists to intersect before this point.
+    i = first_length - second_length
+    while i > 0:
+        first = first.child
+        i -= 1
+
+    i = second_length - first_length
+    while i > 0:
+        second = second.child
+        i -= 1
+
+    # Iterate through the lists until we find a matching node
+    while first or second:
+        if first is second:
+            return first
+
+        first = first.child
+        second = second.child
+
+
+def lists_intersect_simplistic(first, second):
+    """
+    Checks if two singly linked-lists intersect
+
+    * This implementation's runtime is O(ab)
+    * Its space complexity is O(1)
+
+    :param first: The head of the first linked-list
+    :param second: The head of the second linked-list
+    :return: The intersecting node if one exists
+    :rtype: Node
+    """
+    restart = second
+    while first:
+        while second:
+            if first is second:
+                return first
+            second = second.child
+        first = first.child
+        second = restart
+
+    return

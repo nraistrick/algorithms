@@ -13,6 +13,8 @@ from linked_list_algorithms import \
     is_palindrome, \
     is_palindrome_doubly, \
     is_palindrome_using_list, \
+    lists_intersect, \
+    lists_intersect_simplistic, \
     Node, \
     partition_list, \
     remove_duplicates, \
@@ -261,6 +263,38 @@ class TestLinkedListAlgorithms(unittest.TestCase):
         self.assertFalse(is_palindrome_doubly(self.create_linked_list_doubly((1, 2))))
         self.assertFalse(is_palindrome_doubly(self.create_linked_list_doubly((1, 2, 3, 4))))
         self.assertFalse(is_palindrome_doubly(self.create_linked_list_doubly((1, 2, 3, 2, 2))))
+
+    def test_lists_intersect(self):
+        """
+        Check if the same node appears in both lists
+        """
+        first = self.create_linked_list((1, 2, 3))
+        second = self.create_linked_list((5, 6, 7))
+
+        self.assertIsNone(lists_intersect(first, second))
+
+        intersecting_node = second.child.child
+        temp = first.child.child
+        first.child = intersecting_node
+        first.child.child = temp
+
+        self.assertEqual(intersecting_node, lists_intersect(first, second))
+
+    def test_lists_intersect_simplistic(self):
+        """
+        Check if the same node appears in both lists
+        """
+        first = self.create_linked_list((1, 2, 3))
+        second = self.create_linked_list((5, 6, 7))
+
+        self.assertIsNone(lists_intersect_simplistic(first, second))
+
+        intersecting_node = second.child.child
+        temp = first.child.child
+        first.child = intersecting_node
+        first.child.child = temp
+
+        self.assertEqual(intersecting_node, lists_intersect_simplistic(first, second))
 
     @staticmethod
     def create_linked_list(values):
