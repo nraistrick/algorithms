@@ -4,11 +4,15 @@ from linked_list_algorithms import \
     create_number, \
     create_reverse_number, \
     delete_middle_node, \
+    DoubleNode, \
     get_kth_to_last_element, \
     get_number, \
     get_reverse_number, \
     get_unique, \
     get_unique_reverse, \
+    is_palindrome, \
+    is_palindrome_doubly, \
+    is_palindrome_using_list, \
     Node, \
     partition_list, \
     remove_duplicates, \
@@ -222,6 +226,42 @@ class TestLinkedListAlgorithms(unittest.TestCase):
         head = create_number(912)
         self.verify_linked_list_values(head, expected_values)
 
+    def test_is_palindrome(self):
+        """
+        Checks we correctly identify linked-lists which are also palindromes
+        """
+        self.assertTrue(is_palindrome(self.create_linked_list((1,))))
+        self.assertTrue(is_palindrome(self.create_linked_list((1, 2, 2, 1))))
+        self.assertTrue(is_palindrome(self.create_linked_list((1, 2, 3, 2, 1))))
+
+        self.assertFalse(is_palindrome(self.create_linked_list((1, 2))))
+        self.assertFalse(is_palindrome(self.create_linked_list((1, 2, 3, 4))))
+        self.assertFalse(is_palindrome(self.create_linked_list((1, 2, 3, 2, 2))))
+
+    def test_is_palindrome_using_list(self):
+        """
+        Checks we correctly identify linked-lists which are also palindromes
+        """
+        self.assertTrue(is_palindrome_using_list(self.create_linked_list((1,))))
+        self.assertTrue(is_palindrome_using_list(self.create_linked_list((1, 2, 2, 1))))
+        self.assertTrue(is_palindrome_using_list(self.create_linked_list((1, 2, 3, 2, 1))))
+
+        self.assertFalse(is_palindrome_using_list(self.create_linked_list((1, 2))))
+        self.assertFalse(is_palindrome_using_list(self.create_linked_list((1, 2, 3, 4))))
+        self.assertFalse(is_palindrome_using_list(self.create_linked_list((1, 2, 3, 2, 2))))
+
+    def test_is_palindrome_doubly(self):
+        """
+        Checks we correctly identify doubly linked-lists which are also palindromes
+        """
+        self.assertTrue(is_palindrome_doubly(self.create_linked_list_doubly((1,))))
+        self.assertTrue(is_palindrome_doubly(self.create_linked_list_doubly((1, 2, 2, 1))))
+        self.assertTrue(is_palindrome_doubly(self.create_linked_list_doubly((1, 2, 3, 2, 1))))
+
+        self.assertFalse(is_palindrome_doubly(self.create_linked_list_doubly((1, 2))))
+        self.assertFalse(is_palindrome_doubly(self.create_linked_list_doubly((1, 2, 3, 4))))
+        self.assertFalse(is_palindrome_doubly(self.create_linked_list_doubly((1, 2, 3, 2, 2))))
+
     @staticmethod
     def create_linked_list(values):
         """
@@ -234,6 +274,23 @@ class TestLinkedListAlgorithms(unittest.TestCase):
         current = head = Node(values[0])
         for i in values[1:]:
             current.child = Node(i)
+            current = current.child
+
+        return head
+
+    @staticmethod
+    def create_linked_list_doubly(values):
+        """
+        Creates a doubly linked list from the provided iterable of values
+
+        :param collections.Iterable values: A collection of node values
+        :return: The head of the created linked list
+        :rtype: DoubleNode
+        """
+        current = head = DoubleNode(values[0])
+        for i in values[1:]:
+            current.child = DoubleNode(i)
+            current.child.parent = current
             current = current.child
 
         return head

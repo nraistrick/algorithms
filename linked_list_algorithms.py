@@ -15,6 +15,20 @@ class Node(object):
         self.child = child
 
 
+class DoubleNode(object):
+    """
+    Represents a single node in a doubly linked-list
+
+    :param int value: The value of the item
+    :param Node child: A reference to the next item in the list
+    :param Node parent: A reference to the last item in the list
+    """
+    def __init__(self, value, child=None, parent=None):
+        self.value = value
+        self.child = child
+        self.parent = parent
+
+
 def remove_duplicates(node):
     """
     Removes all duplicate nodes from an unsorted linked-list. This is
@@ -398,3 +412,96 @@ def get_number(node):
         node = node.child
 
     return total
+
+
+def is_palindrome(node):
+    """
+    Checks if a singly linked-list has a palindromic set of values
+
+    * This implementation's runtime is O(n^2)
+    * Its space complexity is O(1)
+
+    :param Node node: The head node
+    :return: Whether the list is a palindrome
+    :rtype: bool
+    """
+    # Find length and midpoint of linked-list
+    normal = fast = node
+    length = 1
+
+    while True:
+        if fast and fast.child:
+            normal = normal.child
+            fast = fast.child.child
+            length += 2 if fast else 1
+        else:
+            break
+
+    midpoint = normal.child if length > 1 and length % 2 == 1 else normal
+
+    # Check if the list is a palindrome
+    palindrome = True
+    for i in range(length/2):
+        mirrored = midpoint
+        for _ in range(1, length/2 - i):
+            mirrored = mirrored.child
+
+        if node.value != mirrored.value:
+            palindrome = False
+            break
+
+        node = node.child
+
+    return palindrome
+
+
+def is_palindrome_using_list(node):
+    """
+    Checks if a singly linked-list has a palindromic set of values
+
+    * This implementation's runtime is O(n)
+    * Its space complexity is O(n)
+
+    :param Node node: The head node
+    :return: Whether the list is a palindrome
+    :rtype: bool
+    """
+    data = []
+    while node:
+        data.append(node.value)
+        node = node.child
+
+    for i in range(len(data)/2):
+        if data[i] != data[-1 - i]:
+            return False
+
+    return True
+
+
+def is_palindrome_doubly(node):
+    """
+    Checks if a doubly linked-list has a palindromic set of values
+
+    * This implementation's runtime is O(n)
+    * Its space complexity is O(1)
+
+    :param DoubleNode node: The head node
+    :return: Whether the list is a palindrome
+    :rtype: bool
+    """
+    length = 1
+    end = node
+    while end.child:
+        end = end.child
+        length += 1
+
+    palindrome = True
+    for _ in range(length/2):
+        if node.value != end.value:
+            palindrome = False
+            break
+        else:
+            node = node.child
+            end = end.parent
+
+    return palindrome
