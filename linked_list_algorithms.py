@@ -580,3 +580,75 @@ def lists_intersect_simplistic(first, second):
         second = restart
 
     return
+
+
+def detect_loop(node):
+    """
+    Checks if we can correctly detect a circular reference in a singly
+    linked-list. This works using a slow and a fast pointer. If the fast
+    pointer catches up to the slow pointer, there is a loop in the list.
+
+    * This implementation's runtime is O(n)
+    * Its space complexity is O(1)
+
+    :param Node node: The head of the linked-list
+    :return: Whether a loop was detected and how many iterations it took to find
+    """
+    iterations = 0
+    slow = fast = node
+
+    while fast.child:
+        iterations += 1
+        slow = slow.child
+        fast = fast.child.child
+
+        if fast is None:
+            break
+
+        if slow is fast:
+            return True, iterations
+
+    # Reached end of loop, therefore no infinite circular reference
+    return False, iterations
+
+
+def find_loop_start(node):
+    """
+    Finds the first node from a circular reference in a singly linked-list.
+    If we know the number of iterations it took before the slow and fast
+    pointers collide, we can deduce the start of the loop. We then create
+    a pointer to the head of the list, and a pointer to the collision point and
+    iterate simultaneously in single steps from each. The point at which
+    these meet is the first node in the loop.
+
+    * This implementation's runtime is O(n)
+    * Its space complexity is O(1)
+
+    :param Node node: The head of the linked list
+    :return: The first node in the list
+    :rtype: Node
+    """
+    # Protects from getting stuck in an infinite loop if the algorithm
+    # does not correctly detect a circular reference in the linked-list
+    max_iterations = 1000
+
+    detected, iterations = detect_loop(node)
+    if not detected:
+        raise ValueError("Couldn't find circular reference in linked-list")
+
+    head = node
+    for _ in range(iterations):
+        node = node.child
+
+    while head is not node:
+        head = head.child
+        node = node.child
+        max_iterations -= 1
+        if max_iterations <= 0:
+            raise ValueError("Took too long to find circular reference."
+                             "It's possible that one does exist, but"
+                             "the provided list was very large. Otherwise,"
+                             "something went wrong with our calculations.")
+
+    return node
+

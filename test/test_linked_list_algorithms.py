@@ -4,7 +4,9 @@ from linked_list_algorithms import \
     create_number, \
     create_reverse_number, \
     delete_middle_node, \
+    detect_loop, \
     DoubleNode, \
+    find_loop_start, \
     get_kth_to_last_element, \
     get_number, \
     get_reverse_number, \
@@ -295,6 +297,48 @@ class TestLinkedListAlgorithms(unittest.TestCase):
         first.child.child = temp
 
         self.assertEqual(intersecting_node, lists_intersect_simplistic(first, second))
+
+    def test_detect_loop(self):
+        """
+        Checks we correctly detect whether a singly linked-list contains
+        a circular reference
+        """
+        no_loop = self.create_linked_list((1, 2, 3))
+        self.assertEqual((False, 1), detect_loop(no_loop))
+
+        no_loop = self.create_linked_list((1, 2, 3, 4, 5, 6))
+        self.assertEqual((False, 3), detect_loop(no_loop))
+
+        loop = self.create_linked_list((1, 2, 3, 4, 5))
+        circular_reference = loop.child.child
+        loop.child.child.child.child.child = circular_reference
+        self.assertEqual((True, 3), detect_loop(loop))
+
+    def test_find_loop_start(self):
+        """
+        Checks we can find the first node that's part of a circular reference
+        in a singly linked-list
+        """
+        loop = self.create_linked_list((1, 2, 3))
+        circular_reference = loop
+        loop.child.child.child = circular_reference
+        self.assertIs(circular_reference, find_loop_start(loop))
+
+        loop = self.create_linked_list((1, 2, 3, 4, 5))
+        circular_reference = loop.child.child
+        loop.child.child.child.child.child = circular_reference
+        self.assertIs(circular_reference, find_loop_start(loop))
+
+        loop = self.create_linked_list((1, 2, 3, 4, 5, 6, 7))
+        circular_reference = loop.child.child.child
+        loop.child.child.child.child.child = circular_reference
+        self.assertIs(circular_reference, find_loop_start(loop))
+
+        no_loop = self.create_linked_list((1, 2, 3, 4, 5))
+        self.assertRaises(ValueError, find_loop_start, no_loop)
+
+        large_linked_list = self.create_linked_list(tuple([i for i in range(1001)]))
+        self.assertRaises(ValueError, find_loop_start, large_linked_list)
 
     @staticmethod
     def create_linked_list(values):
