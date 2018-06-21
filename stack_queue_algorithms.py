@@ -180,3 +180,60 @@ class MinStack(object):
         if self.head is None:
             raise ValueError("No minimum value available. Stack is empty")
         return self.head.minimum
+
+
+class SetOfStacks(object):
+    """
+    Represents a set of stacks, each of which have a maximum number of entries.
+    Every time the maximum limit is reached, a new stack is created in the set.
+    """
+    MAX_STACK_SIZE = 5
+
+    class Node(object):
+        def __init__(self, value, last=None):
+            """
+            Represents an element in a stack
+
+            :param value: A stack value
+            :param SetOfStacks.Node last: The previous element in the stack
+            """
+            self.value = value
+            self.last = last
+
+        def __len__(self):
+            return len(self.last) + 1 if self.last else 1
+
+    def __init__(self):
+        self.stacks = []  # type: list[self.Node]
+
+    def push(self, value):
+        """
+        Pushes a value onto the first set in the stack
+
+        :param value: The value to be added
+        """
+        if not self.stacks or len(self.stacks[-1]) >= self.MAX_STACK_SIZE:
+            self.stacks.append(self.Node(value))
+        else:
+            node = self.Node(value, self.stacks[-1])
+            self.stacks[-1] = node
+
+    def pop(self, index=-1):
+        """
+        Gets and removes the value at the top of the set of stacks
+
+        :param int index: The index of the stack to pop a value from
+        :return: The top stack value
+        """
+        if not self.stacks:
+            raise ValueError("No stack entries left")
+
+        head = self.stacks[index]
+        value = head.value
+
+        if not head.last:
+            self.stacks.pop(index)
+        else:
+            self.stacks[index] = head.last
+
+        return value

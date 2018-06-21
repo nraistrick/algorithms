@@ -2,7 +2,8 @@ import unittest
 
 from stack_queue_algorithms import \
     MinStack, \
-    MultiStack
+    MultiStack, \
+    SetOfStacks
 
 
 class TestStackQueueAlgorithms(unittest.TestCase):
@@ -179,3 +180,75 @@ class TestStackQueueAlgorithms(unittest.TestCase):
 
         with self.assertRaises(ValueError):
             _ = stack.minimum
+
+    def test_set_of_stacks_push(self):
+        """
+        Checks the class correctly splits added entries across several stacks
+        """
+        stack = SetOfStacks()
+
+        # No stacks should have been added yet
+        self.assertEqual(0, len(stack.stacks))
+
+        # Completely fill up the first stack
+        stack.push(1)
+        stack.push(2)
+        stack.push(3)
+        stack.push(4)
+        stack.push(5)
+
+        self.assertEqual(1, len(stack.stacks))
+
+        # Add the first entry to the second stack
+        stack.push(6)
+
+        self.assertEqual(2, len(stack.stacks))
+
+        # Fill up the remainder of the second stack
+        stack.push(7)
+        stack.push(8)
+        stack.push(9)
+        stack.push(10)
+
+        self.assertEqual(2, len(stack.stacks))
+
+        # Start to fill up the third stack
+        stack.push(11)
+        self.assertEqual(3, len(stack.stacks))
+
+    def test_set_of_stacks_pop(self):
+        """
+        Checks the class correctly removes entries that have been split
+        across several stacks
+        """
+        stack = SetOfStacks()
+
+        # Check the maximum stack size hasn't been changed
+        self.assertEqual(5, stack.MAX_STACK_SIZE)
+
+        # Create at least three stacks
+        for i in range(12):
+            stack.push(i)
+
+        # Remove and inspect the first few entries
+        self.assertEqual(11, stack.pop())
+        self.assertEqual(10, stack.pop())
+        self.assertEqual(9, stack.pop())
+        self.assertEqual(8, stack.pop())
+
+        # Remove a few entries from the first stack in the set
+        self.assertEqual(4, stack.pop(0))
+        self.assertEqual(3, stack.pop(0))
+        self.assertEqual(2, stack.pop(0))
+
+        # Remove all remaining entries from the set
+        self.assertEqual(7, stack.pop())
+        self.assertEqual(6, stack.pop())
+        self.assertEqual(5, stack.pop())
+        self.assertEqual(1, stack.pop())
+        self.assertEqual(0, stack.pop())
+
+        # There should be no more entries remaining
+        self.assertRaises(ValueError, stack.pop)
+
+
