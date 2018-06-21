@@ -1,6 +1,7 @@
 import unittest
 
 from stack_queue_algorithms import \
+    MinStack, \
     MultiStack
 
 
@@ -154,3 +155,27 @@ class TestStackQueueAlgorithms(unittest.TestCase):
         self.assertRaises(ValueError, stack.pop, 3)
 
         self.assertItemsEqual([0, 0, 0, 0], stack.entries)
+
+    def test_min_stack(self):
+        """
+        Tests the stack correctly reports its minimum value
+        """
+        stack = MinStack()
+
+        # Check adding values
+        stack.push(3)
+        self.assertEqual(3, stack.minimum)
+        stack.push(5)
+        self.assertEqual(3, stack.minimum)
+        stack.push(1)
+        self.assertEqual(1, stack.minimum)
+
+        # Check removing values
+        self.assertEqual(1, stack.pop())
+        self.assertEqual(3, stack.minimum)
+        self.assertEqual(5, stack.pop())
+        self.assertEqual(3, stack.minimum)
+        self.assertEqual(3, stack.pop())
+
+        with self.assertRaises(ValueError):
+            _ = stack.minimum

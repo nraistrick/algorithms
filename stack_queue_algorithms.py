@@ -126,3 +126,57 @@ class MultiStack(object):
             self.entries[recorded_stack_id] -= self.ENTRY_SIZE
             if self.entries[previous_pointer] != self.NO_PREVIOUS_ENTRY:
                 self.entries[previous_pointer] -= 1
+
+
+class MinStack(object):
+    """
+    Represents a stack which in addition to push and pop, also has a method
+    to retrieve the minimum value of all entries on the stack in O(1) time
+    """
+    class MinNode(object):
+        """
+        Represents a node in a singly linked-list that also holds
+        the current minimum value of all entries in the list
+        """
+        def __init__(self, value, minimum=None, last=None):
+            """
+            :param int value: The value of the node
+            :param int minimum: The minimum value of all nodes in the list
+            :param MinNode last: The last node in the list
+            """
+            self.value = value
+            self.minimum = minimum
+            self.last = last
+
+    def __init__(self):
+        self.head = None  # type: MinStack.MinNode
+
+    def push(self, value):
+        """
+        Pushes a new value onto the stack
+        :param int value: The numeric value
+        """
+        if self.head is None:
+            self.head = self.MinNode(value, value)
+        else:
+            self.head = self.MinNode(value, min(value, self.head.minimum), self.head)
+
+    def pop(self):
+        """
+        Pops the top value from the stack
+        :return: The top value on the stack
+        :rtype int
+        """
+        top = self.head
+        self.head = self.head.last
+        return top.value
+
+    @property
+    def minimum(self):
+        """
+        :return: The smallest current value on the stack
+        :rtype: int
+        """
+        if self.head is None:
+            raise ValueError("No minimum value available. Stack is empty")
+        return self.head.minimum
