@@ -1,10 +1,12 @@
 import unittest
 
 from stack_queue_algorithms import \
+    BasicStack, \
     MinStack, \
     MultiStack, \
     MyQueue, \
-    SetOfStacks
+    SetOfStacks, \
+    sort_stack
 
 
 class TestStackQueueAlgorithms(unittest.TestCase):
@@ -276,4 +278,65 @@ class TestStackQueueAlgorithms(unittest.TestCase):
         self.assertEqual(6, queue.dequeue())
         self.assertRaises(ValueError, queue.dequeue)
 
+    def test_basic_stack(self):
+        stack = BasicStack()
+        self.assertIsNone(stack.peek())
 
+        stack.push(1)
+        stack.push(2)
+        stack.push(3)
+
+        self.assertEqual(3, stack.peek())
+        self.assertEqual(3, stack.pop())
+        self.assertEqual(2, stack.pop())
+        self.assertEqual(1, stack.pop())
+
+        self.assertRaises(ValueError, stack.pop)
+
+    def test_basic_stack_empty(self):
+        stack = BasicStack()
+        self.assertTrue(stack.empty)
+
+        stack.push(1)
+        self.assertFalse(stack.empty)
+
+        stack.push(2)
+        self.assertFalse(stack.empty)
+
+        stack.pop()
+        self.assertFalse(stack.empty)
+
+        stack.pop()
+        self.assertTrue(stack.empty)
+
+    def test_sort_stack(self):
+        """
+        Checks we correctly sort a stack with the smallest values first
+        using only one additional temporary stack data-structure
+        """
+        stack = BasicStack()
+
+        stack.push(6)
+        stack.push(4)
+        stack.push(2)
+        stack.push(1)
+        stack.push(3)
+        stack.push(7)
+        stack.push(5)
+
+        sorted_stack = sort_stack(stack)
+
+        self.assertEqual(1, sorted_stack.pop())
+        self.assertEqual(2, sorted_stack.pop())
+        self.assertEqual(3, sorted_stack.pop())
+        self.assertEqual(4, sorted_stack.pop())
+        self.assertEqual(5, sorted_stack.pop())
+        self.assertEqual(6, sorted_stack.pop())
+        self.assertEqual(7, sorted_stack.pop())
+
+    def test_sort_stack_empty(self):
+        """
+        Checks we handle sorting an empty stack without error
+        """
+        stack = BasicStack()
+        self.assertIsNone(sort_stack(stack).head)

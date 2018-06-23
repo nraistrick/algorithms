@@ -2,6 +2,8 @@
 Contains a selection of stack and queue related algorithms
 """
 
+from itertools import count
+
 
 class MultiStack(object):
     """
@@ -282,4 +284,79 @@ class MyQueue(object):
             self._queueing = None
 
         return head.value
+
+
+class BasicStack(object):
+    """
+    Implements a standard stack structure
+    """
+    class Node(object):
+        def __init__(self, value, last=None):
+            """
+            :type last: BasicStack.Node
+            """
+            self.value = value
+            self.last = last
+
+    def __init__(self):
+        self.head = None
+
+    def push(self, value):
+        self.head = self.Node(value, self.head)
+
+    def pop(self):
+        node = self.head
+        if not node:
+            raise ValueError("Stack is empty")
+
+        self.head = self.head.last
+        return node.value
+
+    def peek(self):
+        return self.head.value if self.head else None
+
+    @property
+    def empty(self):
+        return False if self.head else True
+
+
+def sort_stack(stack):
+    """
+    Sorts a stack so that the smallest values are on top. The only
+    other data structure that is allowed is a second temporary stack.
+
+    * This implementation's runtime is O(n)
+    * Its space complexity is O(n)
+
+    :param BasicStack stack: An unsorted stack
+    :return: A sorted stack
+    :rtype: BasicStack
+    """
+    if stack.empty:
+        return stack
+
+    temp = BasicStack()
+    while not stack.empty:
+        top = stack.head
+        max_index = 0
+        max_value = top.value
+        for i in count(1):
+            top = top.last
+            if not top:
+                break
+            if top.value > max_value:
+                max_index = i
+                max_value = top.value
+
+        temp.push(max_value)
+
+        for _ in range(max_index):
+            temp.push(stack.pop())
+
+        stack.pop()
+
+        for _ in range(max_index):
+            stack.push(temp.pop())
+
+    return temp
 
