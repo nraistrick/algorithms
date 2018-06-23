@@ -3,6 +3,7 @@ import unittest
 from stack_queue_algorithms import \
     MinStack, \
     MultiStack, \
+    MyQueue, \
     SetOfStacks
 
 
@@ -250,5 +251,29 @@ class TestStackQueueAlgorithms(unittest.TestCase):
 
         # There should be no more entries remaining
         self.assertRaises(ValueError, stack.pop)
+
+    def test_my_queue(self):
+        """
+        Checks basic operation of the queue is working correctly
+        """
+        queue = MyQueue()
+
+        queue.queue(1)
+        queue.queue(2)
+        queue.queue(3)
+
+        self.assertEqual(1, queue.dequeue())
+        self.assertEqual(2, queue.dequeue())
+        self.assertEqual(3, queue.dequeue())
+        self.assertRaises(ValueError, queue.dequeue)
+
+        queue.queue(4)
+        queue.queue(5)
+        self.assertEqual(4, queue.dequeue())
+
+        queue.queue(6)
+        self.assertEqual(5, queue.dequeue())
+        self.assertEqual(6, queue.dequeue())
+        self.assertRaises(ValueError, queue.dequeue)
 
 

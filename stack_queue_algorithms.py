@@ -237,3 +237,49 @@ class SetOfStacks(object):
             self.stacks[index] = head.last
 
         return value
+
+
+class MyQueue(object):
+    """
+    Implements a queue using two stack pointers
+    """
+    class Node(object):
+        def __init__(self, value, last=None):
+            """
+            :type last: MyQueue.Node
+            """
+            self.value = value
+            self.last = last
+
+    def __init__(self):
+        self._queueing = None  # type: self.Node
+        self._dequeuing = None  # type: self.Node
+
+    def queue(self, value):
+        """
+        Add an item to the back of the queue
+
+        :param value: The item to add to the queue
+        """
+        if self._queueing:
+            self._queueing.last = self.Node(value)
+            self._queueing = self._queueing.last
+        else:
+            self._queueing = self.Node(value)
+            self._dequeuing = self._queueing
+
+    def dequeue(self):
+        """
+        Get's the item at the front of the queue
+        """
+        if not self._dequeuing:
+            raise ValueError("No items left on the queue")
+
+        head = self._dequeuing
+        self._dequeuing = self._dequeuing.last
+
+        if not self._dequeuing:
+            self._queueing = None
+
+        return head.value
+
