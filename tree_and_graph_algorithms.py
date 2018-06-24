@@ -22,6 +22,18 @@ class BinaryNode(object):
         self.right = right
 
 
+class BinaryNodeWithParent(object):
+    """
+    A node that's part of a binary tree that can also have a link back
+    to its parent node
+    """
+    def __init__(self, value, left=None, right=None, parent=None):
+        self.value = value
+        self.left = left
+        self.right = right
+        self.parent = parent
+
+
 def traverse_binary_tree(tree):
     """
     Iterates through and yields binary tree values in order
@@ -365,3 +377,30 @@ def validate_binary_search_tree(tree):
             return False
 
     return True
+
+
+def find_successor(current):
+    """
+    For a binary-search tree, find the next node in sequence after the current
+
+    :param BinaryNodeWithParent current: The current node
+    :return: The next node in sequence
+    :rtype: BinaryNodeWithParent
+    """
+    if current.right:
+        node = current.right
+        while node.left:
+            node = node.left
+        return node
+
+    else:
+        node = current.parent
+        while node.value <= current.value:
+            if not node.parent:
+                raise ValueError("No successor node. Have been provided "
+                                 "with the last node in the sequence.")
+            node = node.parent
+
+    return node
+
+

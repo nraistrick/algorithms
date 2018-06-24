@@ -2,12 +2,14 @@ import unittest
 
 from tree_and_graph_algorithms import \
     BinaryNode, \
+    BinaryNodeWithParent, \
     breadth_first_search, \
     create_binary_tree, \
     create_list_of_depths, \
     depth_first_search, \
     find_max_values, \
     find_min_values, \
+    find_successor, \
     get_max_depth, \
     GraphVertex, \
     is_balanced, \
@@ -321,3 +323,43 @@ class TestTreeAndGraphAlgorithms(unittest.TestCase):
         not_binary_search_tree.right.right = BinaryNode(0)
 
         self.assertFalse(validate_binary_search_tree(not_binary_search_tree))
+
+    def test_find_successor(self):
+        """
+        From a given node, checks we correctly find the next successor node in
+        a binary search tree
+        """
+        first = BinaryNodeWithParent(1)
+        second = BinaryNodeWithParent(2)
+        third = BinaryNodeWithParent(3)
+        fourth = BinaryNodeWithParent(4)
+        fifth = BinaryNodeWithParent(5)
+        sixth = BinaryNodeWithParent(6)
+        seventh = BinaryNodeWithParent(7)
+
+        tree = fourth
+
+        tree.left = second
+        tree.left.parent = fourth
+
+        tree.left.left = first
+        tree.left.left.parent = second
+
+        tree.left.right = third
+        tree.left.right.parent = second
+
+        tree.right = sixth
+        tree.right.parent = fourth
+
+        tree.right.left = fifth
+        tree.right.left.parent = sixth
+
+        tree.right.right = seventh
+        tree.right.right.parent = sixth
+
+        self.assertIs(second, find_successor(first))
+        self.assertIs(third, find_successor(second))
+        self.assertIs(fourth, find_successor(third))
+        self.assertIs(fifth, find_successor(fourth))
+        self.assertIs(sixth, find_successor(fifth))
+        self.assertIs(seventh, find_successor(sixth))
