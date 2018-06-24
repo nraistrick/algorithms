@@ -7,6 +7,7 @@ from tree_and_graph_algorithms import \
     create_binary_tree, \
     create_list_of_depths, \
     depth_first_search, \
+    find_build_order, \
     find_max_values, \
     find_min_values, \
     find_successor, \
@@ -363,3 +364,31 @@ class TestTreeAndGraphAlgorithms(unittest.TestCase):
         self.assertIs(fifth, find_successor(fourth))
         self.assertIs(sixth, find_successor(fifth))
         self.assertIs(seventh, find_successor(sixth))
+
+    def test_find_build_order(self):
+        """
+        Checks we correctly resolve the build order for a set of projects
+        based on the provided dependency links
+        """
+        projects = ["a", "b", "c", "d", "e", "f"]
+
+        # The first project in the tuple is dependent on the second
+        # project being built first
+        dependencies = [("d", "a"),
+                        ("b", "f"),
+                        ("d", "b"),
+                        ("a", "f"),
+                        ("c", "d")]
+
+        success, build_order = find_build_order(projects, dependencies)
+        self.assertTrue(success)
+        self.assertEqual(["f", "a", "b", "d", "c", "e"], build_order)
+
+        # Add a circular dependency so it's impossible to successfully
+        # build all the projects. The circular dependency here is:
+        # b -> d -> c -> b -> ...
+        dependencies.append(("b", "c"))
+
+        success, build_order = find_build_order(projects, dependencies)
+        self.assertFalse(success)
+        self.assertEqual(["f", "a", "e"], build_order)

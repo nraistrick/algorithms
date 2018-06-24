@@ -404,3 +404,60 @@ def find_successor(current):
     return node
 
 
+def find_build_order(projects, dependencies):
+    """
+    Finds a valid build order for the provided projects, given a list of
+    project dependencies
+
+    :param list[str] projects: The project names
+    :param list[tuple[str, str]] dependencies: A collection of project
+    dependencies. The first project name is dependent on the second project
+    being built
+    :return: Whether we build the project successfully and the build order
+    :rtype: tuple[boolean, list[str]]
+    """
+    class Project(object):
+        """
+        Represents a single project to be built
+        """
+        def __init__(self, name, children=None, parents=None):
+            """
+            :type name: str
+            :type children: list[Project]
+            :type parents: list[Project]
+            """
+            self.name = name
+            self.children = children or []
+            self.parents = parents or []
+            self.built = False
+
+    # Set up a project graph with dependency links
+    project_vertices = {p: Project(p) for p in projects}
+    for child, parent in dependencies:
+        project_vertices[child].parents.append(project_vertices[parent])
+        project_vertices[parent].children.append(project_vertices[child])
+
+    # First add projects to the queue that don't have any dependencies
+    stack = []
+    for p in project_vertices.values():
+        if not p.parents:
+            stack.append(p)
+
+    # Now try build the remaining projects in an allowable order
+    build_order = []
+    while stack:
+        current = stack.pop(-1)
+
+        parents_built = not any([p for p in current.parents if p.built is False])
+        if not parents_built:
+            continue
+
+        current.built = True
+        build_order.append(current.name)
+        for child in current.children:
+            stack.append(child)
+
+    # Check if all the projects have been build successfully
+    success = not any([p for p in project_vertices.values() if p.built is False])
+
+    return success, build_order
