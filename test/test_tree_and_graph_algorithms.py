@@ -6,13 +6,16 @@ from tree_and_graph_algorithms import \
     create_binary_tree, \
     create_list_of_depths, \
     depth_first_search, \
+    find_max_values, \
+    find_min_values, \
     get_max_depth, \
     GraphVertex, \
     is_balanced, \
     route_exists, \
     traverse_binary_tree, \
     traverse_binary_tree_post_order, \
-    traverse_binary_tree_pre_order
+    traverse_binary_tree_pre_order, \
+    validate_binary_search_tree
 
 
 class TestTreeAndGraphAlgorithms(unittest.TestCase):
@@ -257,3 +260,64 @@ class TestTreeAndGraphAlgorithms(unittest.TestCase):
 
         self.assertTrue(is_balanced(balanced_tree))
         self.assertFalse(is_balanced(unbalanced_tree))
+
+    def test_find_maximum_values(self):
+        """
+        Checks we incrementally report the discovered maximum values
+        in a binary tree
+        """
+        tree = BinaryNode(3)
+        tree.left = BinaryNode(1)
+        tree.left.right = BinaryNode(2)
+        tree.left.right.right = BinaryNode(4)
+        tree.right = BinaryNode(5)
+        tree.right.left = BinaryNode(4)
+        tree.right.right = BinaryNode(0)
+
+        expected_maximum_values = [3, 4, 5]
+        actual_maximum_values = [v for v in find_max_values(tree)]
+        self.assertEqual(expected_maximum_values, actual_maximum_values)
+
+    def test_find_minimum_values(self):
+        """
+        Checks we incrementally report the discovered maximum values
+        in a binary tree
+        """
+        tree = BinaryNode(3)
+        tree.left = BinaryNode(1)
+        tree.left.right = BinaryNode(2)
+        tree.left.right.right = BinaryNode(4)
+        tree.right = BinaryNode(5)
+        tree.right.left = BinaryNode(4)
+        tree.right.right = BinaryNode(0)
+
+        expected_minimum_values = [3, 1, 0]
+        actual_minimum_values = [v for v in find_min_values(tree)]
+        self.assertEqual(expected_minimum_values, actual_minimum_values)
+
+    def test_validate_binary_search_tree(self):
+        """
+        Tests if we correctly identify if a binary tree is a valid
+        binary-search tree i.e. all elements to the left of the root element
+        are smaller in value and all elements to the right are greater than or
+        equal in value
+        """
+        binary_search_tree = BinaryNode(5)
+        binary_search_tree.left = BinaryNode(3)
+        binary_search_tree.left.left = BinaryNode(1)
+        binary_search_tree.left.right = BinaryNode(4)
+        binary_search_tree.right = BinaryNode(9)
+        binary_search_tree.right.left = BinaryNode(6)
+        binary_search_tree.right.right = BinaryNode(10)
+
+        self.assertTrue(validate_binary_search_tree(binary_search_tree))
+
+        not_binary_search_tree = BinaryNode(3)
+        not_binary_search_tree.left = BinaryNode(1)
+        not_binary_search_tree.left.right = BinaryNode(2)
+        not_binary_search_tree.left.right.right = BinaryNode(4)
+        not_binary_search_tree.right = BinaryNode(5)
+        not_binary_search_tree.right.left = BinaryNode(4)
+        not_binary_search_tree.right.right = BinaryNode(0)
+
+        self.assertFalse(validate_binary_search_tree(not_binary_search_tree))

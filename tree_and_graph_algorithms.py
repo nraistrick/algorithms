@@ -283,3 +283,85 @@ def is_balanced(tree):
         return False
 
     return True if is_balanced(tree.left) and is_balanced(tree.right) else False
+
+
+def find_max_values(tree):
+    """
+    Iterate through the values in the provided binary tree structure
+    and incrementally report the maximum value found. We don't assume
+    that the provided tree is a binary-search tree i.e. the tree isn't
+    guaranteed to present values in order.
+
+    :param BinaryNode tree: The root of a binary tree
+    :return: The latest maximum values as the algorithm iterates through the tree
+    :rtype: collections.Iterable[int]
+    """
+    if not tree:
+        raise ValueError("No binary tree provided")
+
+    maximum = tree.value
+    yield maximum
+
+    for branch in tree.left, tree.right:
+
+        try:
+            for v in find_max_values(branch):
+                if v > maximum:
+                    maximum = v
+                    yield maximum
+
+        except ValueError:
+            pass
+
+
+def find_min_values(tree):
+    """
+    Iterate through the values in the provided binary tree structure
+    and incrementally report the minimum value found. We don't assume
+    that the provided tree is a binary-search tree i.e. the tree isn't
+    guaranteed to present values in order.
+
+    :param BinaryNode tree: The root of a binary tree
+    :return: The latest minimum values as the algorithm iterates through the tree
+    :rtype: collections.Iterable[int]
+    """
+    if not tree:
+        raise ValueError("No binary tree provided")
+
+    minimum = tree.value
+    yield minimum
+
+    for branch in tree.left, tree.right:
+
+        try:
+            for v in find_min_values(branch):
+                if v < minimum:
+                    minimum = v
+                    yield minimum
+
+        except ValueError:
+            pass
+
+
+def validate_binary_search_tree(tree):
+    """
+    Checks if a binary tree is a valid binary-search tree i.e. all values
+    to the left of the root node are smaller in value and all values to the
+    right of the root node are equal or larger in value.
+
+    :param BinaryNode tree: The root binary node in the tree
+    :return: True if the tree is a valid binary search tree, False otherwise
+    :rtype: bool
+    """
+    if not tree:
+        return False
+
+    for v in find_max_values(tree.left):
+        if v >= tree.value:
+            return False
+
+    for v in find_min_values(tree.right):
+        if v < tree.value:
+            return False
+
+    return True
