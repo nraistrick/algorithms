@@ -3,6 +3,8 @@ import unittest
 from tree_and_graph_algorithms import \
     BinaryNode, \
     breadth_first_search, \
+    create_binary_tree, \
+    create_list_of_depths, \
     depth_first_search, \
     GraphVertex, \
     route_exists, \
@@ -149,3 +151,55 @@ class TestTreeAndGraphAlgorithms(unittest.TestCase):
         self.assertFalse(route_exists(first, fifth))
         self.assertFalse(route_exists(sixth, second))
 
+    def test_create_binary_tree(self):
+        """
+        Checks we correctly create a minimal height binary tree from a
+        collection of sorted integer values
+        """
+        values = [0, 1, 2]
+        tree = create_binary_tree(values)
+        self.assertEqual(1, tree.value)
+        self.assertEqual(0, tree.left.value)
+        self.assertEqual(2, tree.right.value)
+
+        values = [0, 1, 2, 3, 4, 5, 6, 7]
+        tree = create_binary_tree(values)
+        self.assertEqual(4, tree.value)
+
+        self.assertEqual(2, tree.left.value)
+        self.assertEqual(6, tree.right.value)
+
+        self.assertEqual(1, tree.left.left.value)
+        self.assertEqual(3, tree.left.right.value)
+        self.assertEqual(5, tree.right.left.value)
+        self.assertEqual(7, tree.right.right.value)
+
+        self.assertEqual(0, tree.left.left.left.value)
+
+    def test_list_of_depths(self):
+        """
+        For a given binary tree, tests we correctly create a set of
+        linked-lists, each of which represents all the nodes in a single
+        layer of the binary tree
+        """
+        # Set up a binary tree
+        tree = BinaryNode(5)
+        tree.left = BinaryNode(3)
+        tree.left.left = BinaryNode(1)
+        tree.left.right = BinaryNode(4)
+        tree.right = BinaryNode(9)
+        tree.right.left = BinaryNode(6)
+        tree.right.right = BinaryNode(10)
+
+        depths = create_list_of_depths(tree)
+
+        self.assertEqual(3, len(depths))
+        self.assertEqual(depths[0].value, 5)
+
+        self.assertEqual(depths[1].value, 3)
+        self.assertEqual(depths[1].child.value, 9)
+
+        self.assertEqual(depths[2].value, 1)
+        self.assertEqual(depths[2].child.value, 4)
+        self.assertEqual(depths[2].child.child.value, 6)
+        self.assertEqual(depths[2].child.child.child.value, 10)

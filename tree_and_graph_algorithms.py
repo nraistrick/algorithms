@@ -4,6 +4,8 @@ Contains a selection of tree and graph related algorithms
 
 from Queue import Queue
 
+from linked_list_algorithms import Node
+
 
 class BinaryNode(object):
     """
@@ -196,3 +198,57 @@ def route_exists(first, second):
                 second_queue.put(v)
 
     return False
+
+
+def create_binary_tree(values):
+    """
+    Creates a minimal-height binary-tree from a list of sorted integer
+    elements
+
+    :param list[int] values: A sorted collection of integer values
+    :return: The root node of the binary tree
+    :rtype: BinaryNode
+    """
+    if not values or len(values) == 0:
+        return
+
+    midpoint = len(values) / 2
+    root = BinaryNode(values[midpoint])
+    root.left = create_binary_tree(values[:midpoint])
+    root.right = create_binary_tree(values[midpoint + 1:])
+
+    return root
+
+
+def create_list_of_depths(tree):
+    """
+    Creates a set of linked-lists, each of which contain all the nodes
+    in a single layer of a binary-tree
+
+    :param BinaryNode tree: The root node of the tree
+    :return: A lookup table, mapping the layer ID to its corresponding linked-list
+    :rtype: dict[int, Node]
+    """
+    if tree is None:
+        return {}
+
+    depths = {0: Node(tree.value)}
+
+    further_depths = create_list_of_depths(tree.left)
+    for key, value in further_depths.items():
+        depths[key + 1] = value
+
+    further_depths = create_list_of_depths(tree.right)
+    for key, value in further_depths.items():
+        if key + 1 in depths:
+
+            # Add node to the end of the linked-list
+            node = depths[key + 1]
+            while node.child:
+                node = node.child
+            node.child = value
+
+        else:
+            depths[key + 1] = value
+
+    return depths
