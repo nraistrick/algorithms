@@ -6,7 +6,9 @@ from tree_and_graph_algorithms import \
     create_binary_tree, \
     create_list_of_depths, \
     depth_first_search, \
+    get_max_depth, \
     GraphVertex, \
+    is_balanced, \
     route_exists, \
     traverse_binary_tree, \
     traverse_binary_tree_post_order, \
@@ -203,3 +205,55 @@ class TestTreeAndGraphAlgorithms(unittest.TestCase):
         self.assertEqual(depths[2].child.value, 4)
         self.assertEqual(depths[2].child.child.value, 6)
         self.assertEqual(depths[2].child.child.child.value, 10)
+
+    def test_get_maximum_depth(self):
+        """
+        Checks we correctly calculate the maximum depth of a provided
+        binary search tree
+        """
+        first_tree = BinaryNode(1)
+        self.assertEqual(1, get_max_depth(first_tree))
+
+        second_tree = BinaryNode(1)
+        second_tree.left = BinaryNode(0)
+        self.assertEqual(2, get_max_depth(second_tree))
+
+        third_tree = BinaryNode(5)
+        third_tree.left = BinaryNode(3)
+        third_tree.left.left = BinaryNode(1)
+        third_tree.left.right = BinaryNode(4)
+        third_tree.right = BinaryNode(9)
+        third_tree.right.left = BinaryNode(6)
+        self.assertEqual(3, get_max_depth(third_tree))
+
+        fourth_tree = BinaryNode(1)
+        fourth_tree.right = BinaryNode(2)
+        fourth_tree.right.right = BinaryNode(3)
+        fourth_tree.right.right.right = BinaryNode(4)
+        self.assertEqual(4, get_max_depth(fourth_tree))
+
+    def test_is_balanced(self):
+        """
+        Checks if a given binary tree is balanced. A balanced binary tree
+        is considered to be a tree which has child branches with a maximum
+        difference in depth of one.
+        """
+        # Set up a balanced binary tree
+        balanced_tree = BinaryNode(5)
+        balanced_tree.left = BinaryNode(3)
+        balanced_tree.left.left = BinaryNode(1)
+        balanced_tree.left.right = BinaryNode(4)
+        balanced_tree.right = BinaryNode(9)
+        balanced_tree.right.left = BinaryNode(6)
+        balanced_tree.right.right = BinaryNode(10)
+
+        unbalanced_tree = BinaryNode(3)
+        unbalanced_tree.left = BinaryNode(0)
+        unbalanced_tree.left.right = BinaryNode(1)
+        unbalanced_tree.left.right.right = BinaryNode(2)
+        unbalanced_tree.right = BinaryNode(5)
+        unbalanced_tree.right.left = BinaryNode(4)
+        unbalanced_tree.right.right = BinaryNode(6)
+
+        self.assertTrue(is_balanced(balanced_tree))
+        self.assertFalse(is_balanced(unbalanced_tree))

@@ -252,3 +252,34 @@ def create_list_of_depths(tree):
             depths[key + 1] = value
 
     return depths
+
+
+def get_max_depth(tree):
+    """
+    Get's the maximum depth of a binary search tree
+
+    :param BinaryNode tree: The root of a binary tree
+    :return: The number of layers in the tree
+    :rtype: int
+    """
+    return 0 if not tree else 1 + max(get_max_depth(tree.left),
+                                      get_max_depth(tree.right))
+
+
+def is_balanced(tree):
+    """
+    Checks if a binary tree is balanced
+
+    :param BinaryNode tree: A binary tree
+    :return: True if the binary tree is balanced, else False
+    :rtype: bool
+    """
+    if not tree:
+        return True
+
+    left_depth = get_max_depth(tree.left)
+    right_depth = get_max_depth(tree.right)
+    if abs(left_depth - right_depth) > 1:
+        return False
+
+    return True if is_balanced(tree.left) and is_balanced(tree.right) else False
