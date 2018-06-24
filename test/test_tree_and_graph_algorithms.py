@@ -5,6 +5,7 @@ from tree_and_graph_algorithms import \
     breadth_first_search, \
     depth_first_search, \
     GraphVertex, \
+    route_exists, \
     traverse_binary_tree, \
     traverse_binary_tree_post_order, \
     traverse_binary_tree_pre_order
@@ -117,4 +118,34 @@ class TestTreeAndGraphAlgorithms(unittest.TestCase):
         self.assertFalse(found)
         self.assertIsNone(vertex)
         self.assertIsNone(nodes_visited)
+
+    def test_route_exists(self):
+        """
+        Check we correctly identify if a route exists between two
+        nodes in a graph
+        """
+        # Set up a directed graph
+        first = GraphVertex(1)
+        second = GraphVertex(2)
+        third = GraphVertex(3)
+        fourth = GraphVertex(4)
+
+        first.vertices.extend([second, fourth])
+        second.vertices.extend([third, fourth])
+        third.vertices.append(first)
+        fourth.vertices.append(second)
+
+        fifth = GraphVertex(5)
+        sixth = GraphVertex(6)
+        fifth.vertices.append(sixth)
+        sixth.vertices.append(fifth)
+
+        self.assertTrue(route_exists(first, second))
+        self.assertTrue(route_exists(first, third))
+        self.assertTrue(route_exists(third, fourth))
+        self.assertTrue(route_exists(fifth, sixth))
+        # self.assertTrue(route_exists(first, first))
+
+        self.assertFalse(route_exists(first, fifth))
+        self.assertFalse(route_exists(sixth, second))
 

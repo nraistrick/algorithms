@@ -154,3 +154,45 @@ def breadth_first_search(vertex, value):
             queue.put((v, visited))
 
     return False, None, None
+
+
+def route_exists(first, second):
+    """
+    Checks if a route exists between two vertices in a directed graph
+
+    :param GraphVertex first: The first vertex
+    :param GraphVertex second: The second vertex
+    :return: A flag indicating whether a route could be found
+    :rtype: bool
+    """
+    first_queue = Queue()
+    first_queue.put(first)
+    second_queue = Queue()
+    second_queue.put(second)
+
+    first_visited = [first.value]
+    second_visited = [second.value]
+
+    while not first_queue.empty() or not second_queue.empty():
+
+        vertices = first_queue.get_nowait().vertices if not first_queue.empty() else []
+        for v in vertices:
+            if v.value in second_visited:
+                return True
+            elif v.value in first_visited:
+                continue
+            else:
+                first_visited.append(v.value)
+                first_queue.put(v)
+
+        vertices = second_queue.get_nowait().vertices if not second_queue.empty() else []
+        for v in vertices:
+            if v.value in first_visited:
+                return True
+            elif v.value in second_visited:
+                continue
+            else:
+                second_visited.append(v.value)
+                second_queue.put(v)
+
+    return False
