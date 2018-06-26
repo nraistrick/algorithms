@@ -2,18 +2,24 @@ import unittest
 
 from tree_and_graph_algorithms import \
     BinaryNode, \
+    BinaryNodeWithDirections, \
     BinaryNodeWithParent, \
     breadth_first_search, \
     create_binary_tree, \
     create_list_of_depths, \
     depth_first_search, \
     find_build_order, \
+    find_common_ancestor, \
+    find_common_ancestor_with_directions, \
+    find_common_ancestor_without_parents, \
     find_max_values, \
     find_min_values, \
     find_successor, \
     get_max_depth, \
     GraphVertex, \
     is_balanced, \
+    NodeDirection, \
+    populate_tree_directions, \
     route_exists, \
     traverse_binary_tree, \
     traverse_binary_tree_post_order, \
@@ -392,3 +398,155 @@ class TestTreeAndGraphAlgorithms(unittest.TestCase):
         success, build_order = find_build_order(projects, dependencies)
         self.assertFalse(success)
         self.assertEqual(["f", "a", "e"], build_order)
+
+    def test_find_common_ancestor(self):
+        """
+        Checks we correctly find the common ancestor between two nodes
+        in a binary tree. Note that the tree is not required to be a
+        binary-search tree i.e. the nodes do not have to be ordered.
+        """
+        first = BinaryNodeWithParent(1)
+        second = BinaryNodeWithParent(2)
+        third = BinaryNodeWithParent(3)
+        fourth = BinaryNodeWithParent(4)
+        fifth = BinaryNodeWithParent(5)
+        sixth = BinaryNodeWithParent(6)
+        seventh = BinaryNodeWithParent(7)
+
+        tree = fourth
+
+        tree.left = second
+        tree.left.parent = fourth
+
+        tree.left.left = first
+        tree.left.left.parent = second
+
+        tree.left.right = third
+        tree.left.right.parent = second
+
+        tree.right = sixth
+        tree.right.parent = fourth
+
+        tree.right.left = fifth
+        tree.right.left.parent = sixth
+
+        tree.right.right = seventh
+        tree.right.right.parent = sixth
+
+        self.assertIs(fourth, find_common_ancestor(second, sixth))
+        self.assertIs(fourth, find_common_ancestor(first, seventh))
+        self.assertIs(second, find_common_ancestor(first, third))
+
+        # Same node so they already are common ancestors of each other
+        self.assertIs(fifth, find_common_ancestor(fifth, fifth))
+
+        self.assertRaises(ValueError, find_common_ancestor,
+                          BinaryNodeWithParent(100),
+                          BinaryNodeWithParent(200))
+
+    def test_find_common_ancestor_without_parent(self):
+        """
+        Checks we correctly find the common ancestor between two nodes
+        in a binary tree. Note that the tree is not required to be a
+        binary-search tree i.e. the nodes do not have to be ordered.
+        """
+        first = BinaryNode(1)
+        second = BinaryNode(2)
+        third = BinaryNode(3)
+        fourth = BinaryNode(4)
+        fifth = BinaryNode(5)
+        sixth = BinaryNode(6)
+        seventh = BinaryNode(7)
+
+        tree = fourth
+        tree.left = second
+        tree.left.left = first
+        tree.left.right = third
+        tree.right = sixth
+        tree.right.left = fifth
+        tree.right.right = seventh
+
+        ancestor = find_common_ancestor_without_parents(first, third, tree)
+        self.assertIs(second, ancestor)
+
+        ancestor = find_common_ancestor_without_parents(fifth, seventh, tree)
+        self.assertIs(sixth, ancestor)
+
+        ancestor = find_common_ancestor_without_parents(second, sixth, tree)
+        self.assertIs(fourth, ancestor)
+
+        ancestor = find_common_ancestor_without_parents(fourth, fourth, tree)
+        self.assertIs(fourth, ancestor)
+
+        self.assertRaises(ValueError, find_common_ancestor_without_parents,
+                          BinaryNode(100),
+                          BinaryNode(150),
+                          tree)
+
+    def test_find_common_ancestor_with_directions(self):
+        """
+        Checks we correctly find the common ancestor between two nodes
+        in a binary tree. Note that the tree is not required to be a
+        binary-search tree i.e. the nodes do not have to be ordered.
+        """
+        first = BinaryNodeWithDirections(1)
+        second = BinaryNodeWithDirections(2)
+        third = BinaryNodeWithDirections(3)
+        fourth = BinaryNodeWithDirections(4)
+        fifth = BinaryNodeWithDirections(5)
+        sixth = BinaryNodeWithDirections(6)
+        seventh = BinaryNodeWithDirections(7)
+
+        tree = fourth
+        tree.left = second
+        tree.left.left = first
+        tree.left.right = third
+        tree.right = sixth
+        tree.right.left = fifth
+        tree.right.right = seventh
+
+        ancestor = find_common_ancestor_with_directions(first, third, tree)
+        self.assertIs(second, ancestor)
+
+        ancestor = find_common_ancestor_with_directions(fifth, seventh, tree)
+        self.assertIs(sixth, ancestor)
+
+        ancestor = find_common_ancestor_with_directions(second, sixth, tree)
+        self.assertIs(fourth, ancestor)
+
+        ancestor = find_common_ancestor_with_directions(fourth, fourth, tree)
+        self.assertIs(fourth, ancestor)
+
+        self.assertRaises(ValueError, find_common_ancestor_with_directions,
+                                      BinaryNodeWithDirections(100),
+                                      BinaryNodeWithDirections(150),
+                                      tree)
+
+    def test_populate_directions_in_tree(self):
+        first = BinaryNodeWithDirections(1)
+        second = BinaryNodeWithDirections(2)
+        third = BinaryNodeWithDirections(3)
+        fourth = BinaryNodeWithDirections(4)
+        fifth = BinaryNodeWithDirections(5)
+        sixth = BinaryNodeWithDirections(6)
+        seventh = BinaryNodeWithDirections(7)
+
+        tree = fourth
+        tree.left = second
+        tree.left.left = first
+        tree.left.right = third
+        tree.right = sixth
+        tree.right.left = fifth
+        tree.right.right = seventh
+
+        populate_tree_directions(first, third, tree)
+
+        self.assertEqual(NodeDirection.left, tree.first_direction)
+        self.assertEqual(NodeDirection.left, tree.second_direction)
+
+        self.assertEqual(NodeDirection.left, tree.left.first_direction)
+        self.assertEqual(NodeDirection.right, tree.left.second_direction)
+
+        self.assertEqual(NodeDirection.here, tree.left.left.first_direction)
+        self.assertEqual(NodeDirection.here, tree.left.right.second_direction)
+

@@ -2,6 +2,7 @@
 Contains a selection of tree and graph related algorithms
 """
 
+from enum import Enum
 from Queue import Queue
 
 from linked_list_algorithms import Node
@@ -32,6 +33,28 @@ class BinaryNodeWithParent(object):
         self.left = left
         self.right = right
         self.parent = parent
+
+
+class BinaryNodeWithDirections(object):
+    """
+    A node that's part of a binary tree that can also have a pointer
+    to describe the location of two other nodes in the tree
+    """
+    def __init__(self, value, left=None, right=None):
+        self.value = value
+        self.left = left
+        self.right = right
+        self.first_direction = None   # type: NodeDirection
+        self.second_direction = None  # type: NodeDirection
+
+
+class NodeDirection(Enum):
+    """
+    Describes the location of a child node relative to the current node
+    """
+    left = 1
+    right = 2
+    here = 3
 
 
 def traverse_binary_tree(tree):
@@ -461,3 +484,150 @@ def find_build_order(projects, dependencies):
     success = not any([p for p in project_vertices.values() if p.built is False])
 
     return success, build_order
+
+
+def find_common_ancestor(first, second):
+    """
+    Finds the first common ancestor between two nodes
+
+    To calculate the runtime of this algorithm, we define the number of
+    parents before reaching a common ancestor for the first and second
+    nodes to be 'a' and 'b' respectively.
+
+    * This implementation's runtime is O(ab)
+    * Its space complexity is O(1)
+
+    :param BinaryNodeWithParent first: The first node
+    :param BinaryNodeWithParent second: The second node
+    :return: The first common ancestor. If one of the node's in an ancestor
+    of the other, return that instead.
+    :rtype: BinaryNodeWithParent
+    """
+    while True:
+        current = second
+        while True:
+            if first is current:
+                return first
+            elif not current.parent:
+                break
+            else:
+                current = current.parent
+
+        if first.parent:
+            first = first.parent
+        else:
+            break
+
+    raise ValueError("Unable to find common ancestor for provided nodes")
+
+
+def find_common_ancestor_without_parents(first, second, tree):
+    """
+    Finds the first common ancestor between two nodes in a tree structure
+    where nodes have no links back to their respective parents
+
+    * This implementation's runtime is O(n)
+    * Its space complexity is O(n)
+
+    :param BinaryNode first: The first node
+    :param BinaryNode second: The second node
+    :param BinaryNode tree: The root of a binary tree containing the provided nodes
+    :return: The first common ancestor. If one of the node's in an ancestor
+    of the other, return that instead.
+    :rtype: BinaryNode
+    """
+    first_left, second_left = False, False
+    first_right, second_right = False, False
+
+    if first is tree or second is tree:
+        return tree
+
+    for value in traverse_binary_tree_pre_order(tree.left):
+        if value == first.value:
+            first_left = True
+        elif value == second.value:
+            second_left = True
+
+    for value in traverse_binary_tree_pre_order(tree.right):
+        if value == first.value:
+            first_right = True
+        elif value == second.value:
+            second_right = True
+
+    if first_left and second_left:
+        return find_common_ancestor_without_parents(first, second, tree.left)
+    elif first_right and second_right:
+        return find_common_ancestor_without_parents(first, second, tree.right)
+    elif not (first_left or first_right) or not (second_left or second_right):
+        raise ValueError("Unable to find both of the nodes in the provided tree")
+    else:
+        return tree
+
+
+def find_common_ancestor_with_directions(first, second, tree):
+    """
+    Finds the first common ancestor between two nodes in a tree structure
+    where nodes have no links back to their respective parents. Instead,
+    we populate nodes in the tree with directions to the specified nodes
+    and use those to locate the first common ancestor.
+
+    :param BinaryNodeWithDirections first: The first node
+    :param BinaryNodeWithDirections second: The second node
+    :param BinaryNodeWithDirections tree: The root of a binary tree containing the provided nodes
+    :return: The first common ancestor. If one of the node's is an ancestor
+    of the other, return that instead.
+    :rtype: BinaryNodeWithDirections
+    """
+    first_available, second_available = populate_tree_directions(first, second, tree)
+
+    if not first_available and second_available:
+        raise ValueError("Unable to find both of the nodes in the provided tree")
+
+    node = tree
+    while node.first_direction == node.second_direction:
+        if node.first_direction == NodeDirection.left:
+            node = node.left
+        elif node.first_direction == NodeDirection.right:
+            node = node.right
+        elif node.first_direction == NodeDirection.here:
+            break
+        else:
+            raise ValueError("Got unexpected direction instruction."
+                             "Check the binary tree was populated correctly.")
+
+    return node
+
+
+def populate_tree_directions(first, second, tree):
+    """
+    Populate nodes in the tree with directions to the provided first
+    and second nodes
+
+    :param BinaryNodeWithDirections first: The first node
+    :param BinaryNodeWithDirections second: The second node
+    :param BinaryNodeWithDirections tree: The root of the binary tree
+    :return: Two booleans indicating whether the respective first and second
+    nodes are available in the current tree
+    :rtype: tuple[boolean, boolean]
+    """
+    # Reset the directions on each node if it's not the one we want
+    tree.first_direction = NodeDirection.here if tree is first else None
+    tree.second_direction = NodeDirection.here if tree is second else None
+
+    if tree.first_direction is tree.second_direction is NodeDirection.here:
+        return True, True
+
+    for branch, direction in (tree.left, NodeDirection.left), (tree.right, NodeDirection.right):
+        if not branch:
+            continue
+
+        first_found, second_found = populate_tree_directions(first, second, branch)
+
+        if first_found:
+            tree.first_direction = direction
+        if second_found:
+            tree.second_direction = direction
+
+    first_found, second_found = tree.first_direction is not None, tree.second_direction is not None
+
+    return first_found, second_found
