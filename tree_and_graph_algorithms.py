@@ -5,6 +5,7 @@ Contains a selection of tree and graph related algorithms
 from enum import Enum
 from Queue import Queue
 
+from algorithms import permutations
 from linked_list_algorithms import Node
 
 
@@ -74,6 +75,26 @@ def traverse_binary_tree(tree):
     yield tree.value
 
     for n in traverse_binary_tree(tree.right):
+        yield n
+
+
+def traverse_binary_tree_nodes(tree):
+    """
+    Iterates through and yields binary tree nodes in order
+
+    :param BinaryNode tree: The root node of the tree
+    :return: The nodes in value order
+    :rtype: collections.Iterable[BinaryNode]
+    """
+    if not tree:
+        return
+
+    for n in traverse_binary_tree_nodes(tree.left):
+        yield n
+
+    yield tree
+
+    for n in traverse_binary_tree_nodes(tree.right):
         yield n
 
 
@@ -631,3 +652,118 @@ def populate_tree_directions(first, second, tree):
     first_found, second_found = tree.first_direction is not None, tree.second_direction is not None
 
     return first_found, second_found
+
+
+def get_tree_levels(tree):
+    """
+    Attempts to flatten a binary search tree into its individual component
+    levels e.g.
+
+    Input
+    -----
+
+        4    <--- 1st level
+       / \
+      2  6   <--- 2nd level
+     /\  /\
+    1 3 5 7  <--- 3rd level
+    ...
+
+    Output
+    ------
+    [[4], [2, 6], [1, 3, 5, 7] ...]
+
+    :param BinaryNode tree: The root node of a binary search tree
+    :return: A collection of layers
+    :rtype: list[list[int]]
+    """
+    if not tree:
+        return []
+
+    levels = [[tree.value]]
+
+    further_levels = get_tree_levels(tree.left)
+    for l in further_levels:
+        levels.append(l)
+
+    further_levels = get_tree_levels(tree.right)
+    for i, l in enumerate(further_levels, start=1):
+        if i >= len(levels):
+            levels.append(l)
+        else:
+            levels[i].extend(l)
+
+    return levels
+
+
+def get_tree_creation_values(tree):
+    """
+    Gets all possible combinations of ordered values that can be
+    used to create a binary search tree
+
+    :param BinaryNode tree: The root node of a binary search tree
+    :return: All possible permutations of input values that can
+    create the provided binary tree when traversed in order e.g.
+
+    Input
+    -----
+
+        4    <--- 1st level
+       / \
+      2  6   <--- 2nd level
+     /
+    1        <--- 3rd level
+    ...
+
+    Output
+    ------
+    [(4, 2, 6, 1),
+     (4, 6, 2, 1),
+     (4, 2, 1, 6),
+     (4, 2, 6, 1)]
+
+    The parent values of a node, must appear before their respective child
+    nodes in the list
+    """
+    nodes = [n for n in traverse_binary_tree_nodes(tree)]
+    dependencies = create_parent_dependencies(tree)
+
+    for p in permutations(nodes):
+        inserted = {n: False for n in nodes}
+        valid = True
+        for node in p:
+            inserted[node] = True
+
+            parent = dependencies[node]
+            if parent is None:
+                continue
+            elif inserted[parent] is False:
+                valid = False
+                break
+
+        if valid:
+            yield tuple([node.value for node in p])
+
+
+def create_parent_dependencies(tree, parent=None):
+    """
+    Creates a lookup table linking a current node in a binary tree to its
+    respective parent node
+
+    :param BinaryNode tree: The root node of the binary tree
+    :param BinaryNode parent: The parent node of the provided tree
+    :return: A lookup table to find the parent node for any given child
+    :rtype: dict[BinaryNode, BinaryNode]
+    """
+    dependencies = {}
+    if not tree:
+        return dependencies
+
+    dependencies[tree] = parent
+
+    for branch in tree.left, tree.right:
+        further = create_parent_dependencies(branch, tree)
+        for k, v in further.items():
+            dependencies[k] = v
+
+    return dependencies

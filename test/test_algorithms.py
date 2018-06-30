@@ -1,6 +1,8 @@
 import unittest
 
-from algorithms import find_sum_combinations
+from algorithms import \
+    find_sum_combinations, \
+    permutations
 
 
 class TestAlgorithms(unittest.TestCase):
@@ -80,3 +82,30 @@ class TestAlgorithms(unittest.TestCase):
                                                        [2, 1, 0, 0],
                                                        [3, 0, 0, 0]])
 
+    def test_permutations(self):
+        """
+        Checks we correctly create a collection of all possible permutations
+        for a possible input
+        """
+        values = [1, 2]
+        expected = [(1, 2), (2, 1)]
+
+        actual = [p for p in permutations(values)]
+        self.assertListEqual(expected, actual)
+
+        values = [1, 2, 3]
+        expected = [(1, 2, 3), (1, 3, 2),
+                    (2, 1, 3), (2, 3, 1),
+                    (3, 1, 2), (3, 2, 1)]
+
+        actual = [p for p in permutations(values)]
+        self.assertListEqual(expected, actual)
+
+        values = [1, 2, 3, 4]
+        expected = [(1, 2, 3, 4), (1, 2, 4, 3), (1, 3, 2, 4), (1, 3, 4, 2), (1, 4, 2, 3), (1, 4, 3, 2),
+                    (2, 1, 3, 4), (2, 1, 4, 3), (2, 3, 1, 4), (2, 3, 4, 1), (2, 4, 1, 3), (2, 4, 3, 1),
+                    (3, 1, 2, 4), (3, 1, 4, 2), (3, 2, 1, 4), (3, 2, 4, 1), (3, 4, 1, 2), (3, 4, 2, 1),
+                    (4, 1, 2, 3,), (4, 1, 3, 2), (4, 2, 1, 3), (4, 2, 3, 1), (4, 3, 1, 2), (4, 3, 2, 1)]
+
+        actual = [p for p in permutations(values)]
+        self.assertListEqual(expected, actual)

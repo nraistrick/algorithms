@@ -7,6 +7,7 @@ from tree_and_graph_algorithms import \
     breadth_first_search, \
     create_binary_tree, \
     create_list_of_depths, \
+    create_parent_dependencies, \
     depth_first_search, \
     find_build_order, \
     find_common_ancestor, \
@@ -16,12 +17,15 @@ from tree_and_graph_algorithms import \
     find_min_values, \
     find_successor, \
     get_max_depth, \
+    get_tree_creation_values, \
+    get_tree_levels, \
     GraphVertex, \
     is_balanced, \
     NodeDirection, \
     populate_tree_directions, \
     route_exists, \
     traverse_binary_tree, \
+    traverse_binary_tree_nodes, \
     traverse_binary_tree_post_order, \
     traverse_binary_tree_pre_order, \
     validate_binary_search_tree
@@ -34,16 +38,27 @@ class TestTreeAndGraphAlgorithms(unittest.TestCase):
         tree in the correct order
         """
         # Set up a binary tree
-        tree = BinaryNode(5)
-        tree.left = BinaryNode(3)
-        tree.left.left = BinaryNode(1)
-        tree.left.right = BinaryNode(4)
-        tree.right = BinaryNode(9)
-        tree.right.left = BinaryNode(6)
-        tree.right.right = BinaryNode(10)
+        one = BinaryNode(1)
+        three = BinaryNode(3)
+        four = BinaryNode(4)
+        five = BinaryNode(5)
+        six = BinaryNode(6)
+        nine = BinaryNode(9)
+        ten = BinaryNode(10)
+
+        tree = five
+        tree.left = three
+        tree.left.left = one
+        tree.left.right = four
+        tree.right = nine
+        tree.right.left = six
+        tree.right.right = ten
 
         ordered = [v for v in traverse_binary_tree(tree)]
         self.assertEqual([1, 3, 4, 5, 6, 9, 10], ordered)
+
+        ordered = [v for v in traverse_binary_tree_nodes(tree)]
+        self.assertEqual([one, three, four, five, six, nine, ten], ordered)
 
         pre_ordered = [v for v in traverse_binary_tree_pre_order(tree)]
         self.assertEqual([5, 3, 1, 4, 9, 6, 10], pre_ordered)
@@ -550,3 +565,121 @@ class TestTreeAndGraphAlgorithms(unittest.TestCase):
         self.assertEqual(NodeDirection.here, tree.left.left.first_direction)
         self.assertEqual(NodeDirection.here, tree.left.right.second_direction)
 
+    def test_get_levels(self):
+        """
+        Tests we correctly flatten the values of a binary search tree into a
+        collection of lists, with each list containing the values in a single
+        level of the tree e.g.
+
+        Input
+        -----
+
+            4
+           / \
+          2  6
+         /\  /\
+        1 3 5 7
+
+        Output
+        ------
+        [[4], [2, 6], [1, 3, 5, 7]]
+        """
+        # Test with a balanced binary tree
+        tree = BinaryNode(5)
+        tree.left = BinaryNode(3)
+        tree.left.left = BinaryNode(1)
+        tree.left.right = BinaryNode(4)
+        tree.right = BinaryNode(9)
+        tree.right.left = BinaryNode(6)
+        tree.right.right = BinaryNode(10)
+
+        expected = [[5], [3, 9], [1, 4, 6, 10]]
+        actual = get_tree_levels(tree)
+        self.assertListEqual(expected, actual)
+
+        # Imbalance the binary tree
+        tree.left.left.left = BinaryNode(0)
+
+        expected = [[5], [3, 9], [1, 4, 6, 10], [0]]
+        actual = get_tree_levels(tree)
+        self.assertListEqual(expected, actual)
+
+        # Further imbalance the binary tree
+        tree.right.right.right = BinaryNode(12)
+        tree.right.right.right.left = BinaryNode(11)
+
+        expected = [[5], [3, 9], [1, 4, 6, 10], [0, 12], [11]]
+        actual = get_tree_levels(tree)
+        self.assertListEqual(expected, actual)
+
+    def test_get_actual_tree_creation_values(self):
+        """
+        Checks we correctly get all possible permutations of values that
+        create a particular binary search tree when traversed left to right
+        """
+        tree = BinaryNode(5)
+        tree.left = BinaryNode(3)
+        tree.left.left = BinaryNode(1)
+        tree.left.right = BinaryNode(4)
+        tree.right = BinaryNode(9)
+        tree.right.left = BinaryNode(6)
+
+        expected = [(5, 3, 1, 4, 9, 6),
+                    (5, 3, 1, 9, 4, 6),
+                    (5, 3, 1, 9, 6, 4),
+                    (5, 3, 4, 1, 9, 6),
+                    (5, 3, 4, 9, 1, 6),
+                    (5, 3, 4, 9, 6, 1),
+                    (5, 3, 9, 1, 4, 6),
+                    (5, 3, 9, 1, 6, 4),
+                    (5, 3, 9, 4, 1, 6),
+                    (5, 3, 9, 4, 6, 1),
+                    (5, 3, 9, 6, 1, 4),
+                    (5, 3, 9, 6, 4, 1),
+                    (5, 9, 3, 1, 4, 6),
+                    (5, 9, 3, 1, 6, 4),
+                    (5, 9, 3, 4, 1, 6),
+                    (5, 9, 3, 4, 6, 1),
+                    (5, 9, 3, 6, 1, 4),
+                    (5, 9, 3, 6, 4, 1),
+                    (5, 9, 6, 3, 1, 4),
+                    (5, 9, 6, 3, 4, 1)]
+
+        actual = [p for p in get_tree_creation_values(tree)]
+
+        self.assertListEqual(expected, actual)
+
+    def test_create_parent_dependencies(self):
+        """
+        Checks we correctly create a lookup table to find the given parent
+        for any particular node in a binary tree
+        """
+        first = BinaryNode(1)
+        second = BinaryNode(2)
+        third = BinaryNode(3)
+        fourth = BinaryNode(4)
+        fifth = BinaryNode(5)
+        sixth = BinaryNode(6)
+        seventh = BinaryNode(7)
+
+        tree = fourth
+        tree.left = second
+        tree.left.left = first
+        tree.left.right = third
+        tree.right = sixth
+        tree.right.left = fifth
+        tree.right.right = seventh
+
+        dependencies = create_parent_dependencies(tree)
+
+        expected = {
+            first: second,
+            second: fourth,
+            third: second,
+            fourth: None,
+            fifth: sixth,
+            sixth: fourth,
+            seventh: sixth
+        }
+
+        self.assertEqual(expected, dependencies)
