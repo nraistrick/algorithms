@@ -958,3 +958,27 @@ class BinaryTree(object):
             entries += 1
             if entries >= random_number:
                 return value
+
+
+def count_paths_with_sum(node, required, sum_so_far=0):
+    """
+    Counts the number of paths branching from a given node that have
+    cumulative totals that equal the required value
+
+    :param BinaryNode node: The binary tree node
+    :param int required: The required value
+    :param int sum_so_far: The current cumulative total from previous branches
+    :return: The number of paths with the cumulative sum
+    :rtype: int
+    """
+    total = 0
+    new_sum = sum_so_far + node.value
+    if new_sum == required:
+        total += 1
+
+    if node.left:
+        total += count_paths_with_sum(node.left, required, new_sum)
+    if node.right:
+        total += count_paths_with_sum(node.right, required, new_sum)
+
+    return total

@@ -9,6 +9,7 @@ from tree_and_graph_algorithms import \
     create_binary_tree, \
     create_list_of_depths, \
     create_parent_dependencies, \
+    count_paths_with_sum, \
     depth_first_search, \
     find_build_order, \
     find_common_ancestor, \
@@ -850,3 +851,26 @@ class TestTreeAndGraphAlgorithms(unittest.TestCase):
 
         for k, v in values_seen.items():
             self.assertTrue(v)
+
+    def test_count_paths_with_sum(self):
+        """
+        Checks we correctly count the number of paths in a binary tree
+        with a given sum
+        """
+        tree = BinaryNode(5)
+        tree.left = BinaryNode(3)
+        tree.left.left = BinaryNode(6)
+        tree.left.right = BinaryNode(4)
+        tree.left.right.right = BinaryNode(2)
+        tree.right = BinaryNode(9)
+        tree.right.left = BinaryNode(6)
+        tree.right.right = BinaryNode(8)
+
+        count = count_paths_with_sum(tree, 8)
+        self.assertEqual(1, count)
+
+        count = count_paths_with_sum(tree, 12)
+        self.assertEqual(1, count)
+
+        count = count_paths_with_sum(tree, 14)
+        self.assertEqual(3, count)
