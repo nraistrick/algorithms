@@ -3,6 +3,7 @@ Contains a selection of tree and graph related algorithms
 """
 
 from enum import Enum
+from itertools import izip_longest
 from Queue import Queue
 
 from algorithms import permutations
@@ -767,3 +768,32 @@ def create_parent_dependencies(tree, parent=None):
             dependencies[k] = v
 
     return dependencies
+
+
+def is_subtree(tree, subtree):
+    """
+    Checks if a provided subtree is part of the provided tree
+
+    :param BinaryNode tree: The root node of the main tree
+    :param BinaryNode subtree: The root node of the subtree
+    :return: True if the subtree is part of the main tree, False otherwise
+    :rtype: bool
+    """
+    first = traverse_binary_tree_nodes(tree)
+    for n in first:
+        if n.value != subtree.value:
+            continue
+
+        st1 = traverse_binary_tree_nodes(n)
+        second = traverse_binary_tree_nodes(subtree)
+
+        matched = True
+        for n1, n2 in izip_longest(st1, second):
+            if n1.value != n2.value:
+                matched = False
+                break
+
+        if matched:
+            return True
+
+    return False

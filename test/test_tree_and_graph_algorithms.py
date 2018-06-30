@@ -21,6 +21,7 @@ from tree_and_graph_algorithms import \
     get_tree_levels, \
     GraphVertex, \
     is_balanced, \
+    is_subtree, \
     NodeDirection, \
     populate_tree_directions, \
     route_exists, \
@@ -683,3 +684,37 @@ class TestTreeAndGraphAlgorithms(unittest.TestCase):
         }
 
         self.assertEqual(expected, dependencies)
+
+    def test_is_subtree(self):
+        """
+        Checks we correctly identify if one tree is a subtree of another
+        """
+        first = BinaryNode(1)
+        second = BinaryNode(2)
+        third = BinaryNode(3)
+        fourth = BinaryNode(4)
+        fifth = BinaryNode(5)
+        sixth = BinaryNode(6)
+        seventh = BinaryNode(7)
+
+        tree = fourth
+        tree.left = second
+        tree.left.left = first
+        tree.left.right = third
+        tree.right = sixth
+        tree.right.left = fifth
+        tree.right.right = seventh
+
+        self.assertTrue(is_subtree(tree, sixth))
+        self.assertTrue(is_subtree(tree, second))
+        self.assertTrue(is_subtree(tree, third))
+        self.assertTrue(is_subtree(tree, fourth))
+
+        non_matching_subtree = BinaryNode(4)
+        non_matching_subtree.left = BinaryNode(2)
+        non_matching_subtree.right = BinaryNode(5)
+
+        self.assertFalse(is_subtree(tree, non_matching_subtree))
+        self.assertFalse(is_subtree(tree, BinaryNode(100)))
+
+
