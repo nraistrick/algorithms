@@ -4,6 +4,7 @@ from tree_and_graph_algorithms import \
     BinaryNode, \
     BinaryNodeWithDirections, \
     BinaryNodeWithParent, \
+    BinaryTree, \
     breadth_first_search, \
     create_binary_tree, \
     create_list_of_depths, \
@@ -717,4 +718,135 @@ class TestTreeAndGraphAlgorithms(unittest.TestCase):
         self.assertFalse(is_subtree(tree, non_matching_subtree))
         self.assertFalse(is_subtree(tree, BinaryNode(100)))
 
+    def test_binary_tree_class_insert(self):
+        """
+        Tests a binary tree class implements basic inserting functionality
+        """
+        tree = BinaryTree()
+        tree.insert(5)
+        tree.insert(2)
+        tree.insert(6)
+        tree.insert(7)
+        tree.insert(4)
+        tree.insert(1)
 
+        tree.insert_node(BinaryNode(0))
+        tree.insert_node(BinaryNode(3))
+        tree.insert_node(BinaryNode(8))
+
+        self.assertListEqual([0, 1, 2, 3, 4, 5, 6, 7, 8], list(traverse_binary_tree(tree._root)))
+
+    def test_binary_tree_class_find(self):
+        """
+        Tests a binary tree class implements basic finding functionality
+        """
+        tree = BinaryTree()
+        tree.insert(5)
+        tree.insert(2)
+        tree.insert(6)
+        tree.insert(7)
+        tree.insert(4)
+        tree.insert(1)
+
+        self.assertEquals((True, tree._root), tree.find(5))
+        self.assertEquals((True, tree._root.left), tree.find(2))
+        self.assertEquals((True, tree._root.right.right), tree.find(7))
+        self.assertEquals((True, tree._root.left.left), tree.find(1))
+
+        self.assertEquals((False, None), tree.find(0))
+        self.assertEquals((False, None), tree.find(3))
+        self.assertEquals((False, None), tree.find(8))
+        self.assertEquals((False, None), tree.find(1000))
+
+    def test_binary_tree_class_find_parent(self):
+        """
+        Tests a binary tree class implements basic finding functionality
+        """
+        tree = BinaryTree()
+        tree.insert(5)
+        tree.insert(2)
+        tree.insert(6)
+        tree.insert(7)
+        tree.insert(4)
+        tree.insert(1)
+
+        self.assertEquals((True, tree._root), tree.find_parent(2))
+        self.assertEquals((True, tree._root.right), tree.find_parent(7))
+        self.assertEquals((True, tree._root.left), tree.find_parent(1))
+
+        self.assertEquals((False, None), tree.find_parent(5))
+        self.assertEquals((False, None), tree.find_parent(0))
+        self.assertEquals((False, None), tree.find_parent(3))
+        self.assertEquals((False, None), tree.find_parent(8))
+        self.assertEquals((False, None), tree.find_parent(1000))
+
+    def test_binary_tree_class_delete(self):
+        """
+        Tests a binary tree class implements basic deleting functionality
+        """
+        tree = BinaryTree()
+        tree.insert(5)
+        tree.insert(2)
+        tree.insert(6)
+        tree.insert(7)
+        tree.insert(4)
+        tree.insert(1)
+
+        tree.delete(1)
+        self.assertListEqual([2, 4, 5, 6, 7], list(traverse_binary_tree(tree._root)))
+
+        tree.delete(7)
+        self.assertListEqual([2, 4, 5, 6], list(traverse_binary_tree(tree._root)))
+
+        tree.delete(5)
+        self.assertListEqual([2, 4, 6], list(traverse_binary_tree(tree._root)))
+
+        tree.delete(4)
+        self.assertListEqual([2, 6], list(traverse_binary_tree(tree._root)))
+
+    def test_binary_tree_class_balance(self):
+        """
+        Tests a binary tree class implements the ability to re-balance itself
+        """
+        # Insert nodes so the tree becomes unbalanced
+        tree = BinaryTree()
+        tree.insert(1)
+        tree.insert(2)
+        tree.insert(3)
+        tree.insert(4)
+        tree.insert(5)
+
+        self.assertEqual(1, tree._root.value)
+        self.assertEqual(2, tree._root.right.value)
+        self.assertEqual(3, tree._root.right.right.value)
+        self.assertEqual(4, tree._root.right.right.right.value)
+        self.assertEqual(5, tree._root.right.right.right.right.value)
+
+        tree.balance()
+
+        self.assertEqual(3, tree._root.value)
+        self.assertEqual(2, tree._root.left.value)
+        self.assertEqual(5, tree._root.right.value)
+        self.assertEqual(1, tree._root.left.left.value)
+        self.assertEqual(4, tree._root.right.left.value)
+
+    def test_binary_tree_class_random(self):
+        """
+        Tests a binary tree class implements the ability to get a random node
+        """
+        tree = BinaryTree()
+        values = [5, 2, 6, 7, 4, 1]
+        for v in values:
+            tree.insert(v)
+
+        # We try get a random value from the small set many times. The probability
+        # of not seeing each value at least once is extremely small that if
+        # this test fails then we would highly suspect a problem with the
+        # method's logic
+        values_seen = {v: False for v in values}
+        for _ in range(250):
+            value = tree.get_random()
+            values_seen[value] = True
+
+        for k, v in values_seen.items():
+            self.assertTrue(v)

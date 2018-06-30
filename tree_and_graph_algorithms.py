@@ -5,6 +5,7 @@ Contains a selection of tree and graph related algorithms
 from enum import Enum
 from itertools import izip_longest
 from Queue import Queue
+from random import randint
 
 from algorithms import permutations
 from linked_list_algorithms import Node
@@ -797,3 +798,163 @@ def is_subtree(tree, subtree):
             return True
 
     return False
+
+
+class BinaryTree(object):
+    """
+    Models a binary search tree with basic functionality
+    """
+    def __init__(self):
+        self._root = None  # type: BinaryNode
+
+    def insert(self, value):
+        """
+        Inserts a specific value into the binary tree
+
+        :param int value: The value to insert
+        """
+        node = BinaryNode(value)
+        self._insert(node)
+
+    def insert_node(self, node):
+        """
+        Inserts a specific node into the binary tree
+
+        :param BinaryNode node: The node to insert
+        """
+        self._insert(node)
+
+    def _insert(self, node):
+        """
+        Inserts a new node into the binary tree
+
+        :param BinaryNode node: A value to insert into the tree
+        """
+        if self._root is None:
+            self._root = node
+            return
+
+        current = self._root
+        while True:
+            if node.value < current.value:
+                if current.left:
+                    current = current.left
+                else:
+                    current.left = node
+                    break
+
+            elif node.value >= current.value:
+                if current.right:
+                    current = current.right
+                else:
+                    current.right = node
+                    break
+
+    def find(self, value):
+        """
+        Tries to find the provided value in the binary tree using a
+        depth-first search approach
+
+        :param int value: A value to find in the tree
+        :return: True and the node if the value exists in the binary tree,
+        False and None otherwise
+        :rtype: tuple[bool, BinaryNode]
+        """
+        stack = [self._root]
+        while stack:
+            current = stack.pop()
+            if current.value == value:
+                return True, current
+            if current.right and value >= current.value:
+                stack.append(current.right)
+            if current.left and value < current.value:
+                stack.append(current.left)
+
+        return False, None
+
+    def find_parent(self, value):
+        """
+        Tries to find the parent node of the provided value in the binary tree
+        using a depth-first search approach
+
+        :param int value: A value to find in the tree
+        :return: True and the parent node if the value exists in the binary
+        tree, False and None otherwise
+        :rtype: tuple[bool, BinaryNode]
+        """
+        stack = [self._root]
+        while stack:
+            current = stack.pop()
+            if current.left and current.left.value == value:
+                return True, current
+            if current.right and current.right.value == value:
+                return True, current
+
+            if current.right and value >= current.value:
+                stack.append(current.right)
+            if current.left and value < current.value:
+                stack.append(current.left)
+
+        return False, None
+
+    def delete(self, value):
+        """
+        Deletes the first discovered node in the tree with the provided value
+
+        :param int value: The value of a node to remove
+        """
+        if value == self._root.value:
+            removed = self._root
+            self._root = self._root.left if self._root.left else self._root.right
+            if self._root.left:
+                self.insert_node(removed.left)
+            if self._root.right:
+                self.insert_node(removed.right)
+            return
+
+        found, node = self.find_parent(value)
+        if not found:
+            return
+
+        if node.left and node.left.value == value:
+            removed = node.left
+            node.left = None
+            for n in traverse_binary_tree(removed.left):
+                self.insert(n)
+            for n in traverse_binary_tree(removed.right):
+                self.insert(n)
+
+        elif node.right and node.right.value == value:
+            removed = node.right
+            node.right = None
+            for n in traverse_binary_tree(removed.left):
+                self.insert(n)
+            for n in traverse_binary_tree(removed.right):
+                self.insert(n)
+
+    def balance(self):
+        """
+        Balances a binary tree so it's depth does not vary across the tree
+        by more than one
+        """
+        values = traverse_binary_tree(self._root)
+        self._root = create_binary_tree(list(values))
+
+    def get_random(self):
+        """
+        Gets a random value from the binary tree
+
+        :return: A random value
+        :rtype: int
+        """
+        entries = 0
+        for _ in traverse_binary_tree(self._root):
+            entries += 1
+
+        random_number = randint(0, entries)
+
+        entries = 0
+        for value in traverse_binary_tree(self._root):
+            entries += 1
+            if entries >= random_number:
+                return value
