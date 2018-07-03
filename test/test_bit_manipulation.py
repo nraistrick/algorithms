@@ -2,6 +2,9 @@ import unittest
 
 from bit_manipulation_algorithms import \
     binary_to_string, \
+    count_longest_one_sequence, \
+    flip_a_zero_bit, \
+    flip_bit_to_win, \
     get_bit, \
     insert_bits
 
@@ -59,3 +62,39 @@ class TestBitManipulationAlgorithms(unittest.TestCase):
         self.assertEqual(0, get_bit(0b1000, 7))
 
         self.assertRaises(ValueError, get_bit, 0b1000, -1)
+
+    def test_flip_bit_to_win(self):
+        """
+        Checks we correctly find the longest possible sequence of ones by
+        flipping a single bit in a sequence from a 0 to a 1
+        """
+        self.assertEqual(1, flip_bit_to_win('00000000'))
+        self.assertEqual(3, flip_bit_to_win('01100100'))
+        self.assertEqual(5, flip_bit_to_win('01110100'))
+        self.assertEqual(8, flip_bit_to_win('11111111'))
+        self.assertEqual(8, flip_bit_to_win('11011101111'))
+
+    def test_count_longest_one_sequence(self):
+        """
+        Checks that we correctly count the longest sequence of ones in
+        a provided string containing binary digits
+        """
+        self.assertEqual(1, count_longest_one_sequence("0100"))
+        self.assertEqual(2, count_longest_one_sequence("0110"))
+        self.assertEqual(3, count_longest_one_sequence("1110"))
+        self.assertEqual(4, count_longest_one_sequence("1111"))
+
+        self.assertEqual(1, count_longest_one_sequence("100000000"))
+        self.assertEqual(1, count_longest_one_sequence("101010101"))
+        self.assertEqual(3, count_longest_one_sequence("100110111"))
+        self.assertEqual(4, count_longest_one_sequence("111101100"))
+
+    def test_flip_a_zero_bit(self):
+        """
+        Tests we correctly flip any zero bits that have a neighbouring one bit
+        with the ultimate aim of creating the longest sequence of ones possible
+        """
+        self.assertListEqual(["1100", "0110", "0101"], list(flip_a_zero_bit("0100")))
+        self.assertListEqual(["1101", "0111"], list(flip_a_zero_bit("0101")))
+        self.assertListEqual(["100101", "010101", "001101", "000111"], list(flip_a_zero_bit("000101")))
+        self.assertListEqual(["110101", "011101", "010111"], list(flip_a_zero_bit("010101")))

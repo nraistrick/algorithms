@@ -89,3 +89,74 @@ def get_bit(value, bit):
         raise ValueError("Bit number must be 0 or greater")
 
     return 1 if value & 1 << bit != 0 else 0
+
+
+def flip_bit_to_win(binary_digits):
+    """
+    Finds the longest sequence of 1 digits that can be made by flipping
+    a single bit in a sequence binary digits from a 0 to a 1
+
+    :param str binary_digits: A sequence of binary 0s and 1s
+    :return: The longest sequence of 1s that can be created by one bit flip
+    :rtype: int
+    """
+    if '0' not in binary_digits:
+        return len(binary_digits)
+
+    longest_sequence = 0
+    for sequence in flip_a_zero_bit(binary_digits):
+        count = count_longest_one_sequence(sequence)
+        if count > longest_sequence:
+            longest_sequence = count
+
+    return longest_sequence
+
+
+def count_longest_one_sequence(binary):
+    """
+    Finds the length of the longest sequence of 1s in a binary sequence
+
+    :param str binary: A sequence of binary 0s and 1s
+    :return: The length of the longest sequence of 1s
+    :rtype: int
+    """
+    longest_sequence = 0
+    counting = True
+    current = 0
+
+    for b in binary:
+
+        if b == '0' and counting:
+            if current > longest_sequence:
+                longest_sequence = current
+            counting = False
+            current = 0
+
+        elif b == '1' and not counting:
+            counting = True
+            current = 1
+
+        elif b == '1' and counting:
+            current += 1
+
+    if counting and current > longest_sequence:
+        longest_sequence = current
+
+    return longest_sequence
+
+
+def flip_a_zero_bit(binary):
+    """
+    Flips a single bit in a binary sequence from 0 to 1 with the overall
+    aim of trying to create a sequence with the greatest number of
+    sequential 1s
+
+    :param str binary: A sequence of binary 0s and 1s
+    :return: A sequence of binary 0s and 1s with a single bit
+    flipped from 0 to 1
+    :rtype: str
+    """
+    for i, d in enumerate(binary):
+        if d == '0':
+            flipped = binary[:i] + '1' + binary[i + 1:]
+            yield flipped
