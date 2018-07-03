@@ -2,10 +2,12 @@ import unittest
 
 from bit_manipulation_algorithms import \
     binary_to_string, \
+    count_binary_ones, \
     count_longest_one_sequence, \
     flip_a_zero_bit, \
     flip_bit_to_win, \
     get_bit, \
+    get_next_number, \
     insert_bits
 
 
@@ -98,3 +100,31 @@ class TestBitManipulationAlgorithms(unittest.TestCase):
         self.assertListEqual(["1101", "0111"], list(flip_a_zero_bit("0101")))
         self.assertListEqual(["100101", "010101", "001101", "000111"], list(flip_a_zero_bit("000101")))
         self.assertListEqual(["110101", "011101", "010111"], list(flip_a_zero_bit("010101")))
+
+    def test_get_next_number(self):
+        """
+        Checks we correctly get the next positive number in a sequence that
+        has the same number of binary 1s as the provided number
+        """
+        self.assertEqual(2, get_next_number(1))
+        self.assertEqual(4, get_next_number(2))
+        self.assertEqual(5, get_next_number(3))
+        self.assertEqual(8, get_next_number(4))
+        self.assertEqual(6, get_next_number(5))
+
+        self.assertRaises(ValueError, get_next_number, -1)
+        self.assertRaises(ValueError, get_next_number, -100)
+
+    def test_get_binary_ones(self):
+        """
+        Checks we correctly count the number of binary ones in a sequence
+        """
+        self.assertEqual(1, count_binary_ones(1))
+        self.assertEqual(1, count_binary_ones(2))
+        self.assertEqual(2, count_binary_ones(3))
+        self.assertEqual(1, count_binary_ones(4))
+        self.assertEqual(2, count_binary_ones(5))
+
+        self.assertEqual(2, count_binary_ones(10))
+        self.assertEqual(4, count_binary_ones(15))
+        self.assertEqual(5, count_binary_ones(31))

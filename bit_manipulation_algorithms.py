@@ -160,3 +160,40 @@ def flip_a_zero_bit(binary):
         if d == '0':
             flipped = binary[:i] + '1' + binary[i + 1:]
             yield flipped
+
+
+def get_next_number(number):
+    """
+    Get's the next number after the provided positive integer that
+    has the same number of binary 1s
+
+    :type number: int
+    :return: The next number in sequence with the same number of ones
+    :rtype: int
+    """
+    if number < 0:
+        raise ValueError("Must be provided with a positive integer")
+
+    ones = count_binary_ones(number)
+    number += 1
+    while count_binary_ones(number) != ones:
+        number += 1
+
+    return number
+
+
+def count_binary_ones(number):
+    """
+    Counts the total number of binary 1s in a number
+
+    :param int number: The number to find the binary ones in
+    :rtype: int
+    """
+    ones = 0
+    while number != 0:
+        if number & 1:
+            ones += 1
+
+        number >>= 1
+
+    return ones
