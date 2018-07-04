@@ -212,3 +212,27 @@ def count_bits_to_flip(first, second):
     bits_to_flip = first ^ second
     to_flip = count_binary_ones(bits_to_flip)
     return to_flip
+
+
+def pairwise_swap(number):
+    """
+    Switches the odd and even bits in the provided number
+    e.g. first and second, third and fourth etc...
+
+    :param int number: A positive integer value
+    :return: The integer with its odd and even bits switched
+    :rtype: int
+    """
+    max_bits_supported = 32
+    if number > (2 ** max_bits_supported) - 1:
+        raise ValueError("Algorithm does not support integers greater than %d bits" %
+                         max_bits_supported)
+
+    odd_mask = int("1010" * (max_bits_supported/4), 2)
+    odd = number & odd_mask
+    even = number & ~odd_mask
+
+    odd >>= 1
+    even <<= 1
+
+    return odd | even

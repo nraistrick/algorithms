@@ -9,7 +9,8 @@ from bit_manipulation_algorithms import \
     flip_bit_to_win, \
     get_bit, \
     get_next_number, \
-    insert_bits
+    insert_bits, \
+    pairwise_swap
 
 
 class TestBitManipulationAlgorithms(unittest.TestCase):
@@ -140,3 +141,14 @@ class TestBitManipulationAlgorithms(unittest.TestCase):
         self.assertEqual(4, count_bits_to_flip(0b1111, 0b000))
         self.assertEqual(5, count_bits_to_flip(0b01010, 0b10101))
         self.assertEqual(6, count_bits_to_flip(0b01010111, 0b01101000))
+
+    def test_pairwise_swap(self):
+        """
+        Checks we correctly switch the odd and even bits of a number
+        """
+        self.assertEqual(0b01, pairwise_swap(0b10))
+        self.assertEqual(0b0101, pairwise_swap(0b1010))
+        self.assertEqual(0b11110001, pairwise_swap(0b11110010))
+        self.assertEqual(0b0101010101, pairwise_swap(0b1010101010))
+
+        self.assertRaises(ValueError, pairwise_swap, 2 ** 32)
