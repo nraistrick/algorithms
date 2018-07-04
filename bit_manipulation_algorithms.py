@@ -197,3 +197,18 @@ def count_binary_ones(number):
         number >>= 1
 
     return ones
+
+
+def count_bits_to_flip(first, second):
+    """
+    Finds the number of bits that have to flipped to convert the first number
+    to the second number
+
+    :param int first: The first number
+    :param int second: The second number
+    :return: The number of bits to flip
+    :rtype: int
+    """
+    bits_to_flip = first ^ second
+    to_flip = count_binary_ones(bits_to_flip)
+    return to_flip

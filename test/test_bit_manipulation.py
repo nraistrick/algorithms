@@ -3,6 +3,7 @@ import unittest
 from bit_manipulation_algorithms import \
     binary_to_string, \
     count_binary_ones, \
+    count_bits_to_flip, \
     count_longest_one_sequence, \
     flip_a_zero_bit, \
     flip_bit_to_win, \
@@ -128,3 +129,14 @@ class TestBitManipulationAlgorithms(unittest.TestCase):
         self.assertEqual(2, count_binary_ones(10))
         self.assertEqual(4, count_binary_ones(15))
         self.assertEqual(5, count_binary_ones(31))
+
+    def test_count_bits_to_flip(self):
+        """
+        Checks we correctly count the number of bits to flip to convert one
+        number to another number
+        """
+        self.assertEqual(2, count_bits_to_flip(0b111, 0b001))
+        self.assertEqual(3, count_bits_to_flip(0b111, 0b000))
+        self.assertEqual(4, count_bits_to_flip(0b1111, 0b000))
+        self.assertEqual(5, count_bits_to_flip(0b01010, 0b10101))
+        self.assertEqual(6, count_bits_to_flip(0b01010111, 0b01101000))
