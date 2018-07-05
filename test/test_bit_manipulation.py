@@ -5,12 +5,14 @@ from bit_manipulation_algorithms import \
     count_binary_ones, \
     count_bits_to_flip, \
     count_longest_one_sequence, \
+    draw_line, \
     flip_a_zero_bit, \
     flip_bit_to_win, \
     get_bit, \
     get_next_number, \
     insert_bits, \
-    pairwise_swap
+    pairwise_swap, \
+    set_bit
 
 
 class TestBitManipulationAlgorithms(unittest.TestCase):
@@ -152,3 +154,34 @@ class TestBitManipulationAlgorithms(unittest.TestCase):
         self.assertEqual(0b0101010101, pairwise_swap(0b1010101010))
 
         self.assertRaises(ValueError, pairwise_swap, 2 ** 32)
+
+    def test_draw_line(self):
+        """
+        Checks we correctly draw a line of pixels on a byte array which
+        makes up a screen. Each bit represents a single pixel.
+        """
+        self.assertEqual([0b00111000],
+                         draw_line([0b00000000], 1, 2, 4, 0))
+
+        self.assertEqual([0b00000111, 0b11111000],
+                         draw_line([0b00000000] * 2, 2, 5, 12, 0))
+
+        self.assertEqual([0b00000000, 0b00000000, 0b00011111, 0b11000000],
+                         draw_line([0b00000000] * 4, 2, 3, 9, 1))
+
+        self.assertEqual([0b00000000, 0b00000000, 0b00000000, 0b00000011, 0b11111111, 0b11000000],
+                         draw_line([0b00000000] * 6, 3, 6, 17, 1))
+
+        self.assertEqual([0b00000000, 0b00000000, 0b00000000, 0b00000000, 0b00011000, 0b00000000],
+                         draw_line([0b00000000] * 6, 2, 4, 3, 2))
+
+    def test_set_bit(self):
+        """
+        Checks we correctly set a bit in the provided byte
+        """
+        self.assertEqual(0b10000000, set_bit(0b00000000, 0))
+        self.assertEqual(0b00100000, set_bit(0b00000000, 2))
+        self.assertEqual(0b00000100, set_bit(0b00000000, 5))
+        self.assertEqual(0b00000001, set_bit(0b00000000, 7))
+        self.assertEqual(0b11100001, set_bit(0b11100000, 7))
+        self.assertEqual(0b11100011, set_bit(0b11100001, 6))

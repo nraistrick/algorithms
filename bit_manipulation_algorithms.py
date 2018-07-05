@@ -236,3 +236,56 @@ def pairwise_swap(number):
     even <<= 1
 
     return odd | even
+
+
+def draw_line(screen, width, x1, x2, y):
+    """
+    Draws a horizontal line on a screen of bytes where each pixel is
+    represented by a single bit
+
+    :param list[int] screen: A list of bytes
+    :param int width: The width of the screen which must fit entire bytes in
+    :param int x1: The first horizontal coordinate
+    :param int x2: The second horizontal coordinate
+    :param int y: The vertical coordinate
+    :return: The screen with a horizontal line drawn on it
+    :rtype: list[int]
+    """
+    if x1 > x2:
+        x2, x1 = x1, x2
+
+    x1_bit = (y * width * 8) + x1
+    x2_bit = (y * width * 8) + x2
+
+    x1_byte = int(x1_bit/8)
+    x2_byte = int(x2_bit/8)
+
+    for i in range(8):
+        mapped_bit = (x1_byte * 8) + i
+        if x1_bit <= mapped_bit <= x2_bit:
+            screen[x1_byte] = set_bit(screen[x1_byte], i)
+
+    if x1_byte == x2_byte:
+        return screen
+
+    for i in range(x1_byte + 1, x2_byte):
+        screen[i] |= 0b11111111
+
+    for i in range(8):
+        mapped_bit = (x2_byte * 8) + i
+        if mapped_bit <= x2_bit:
+            screen[x2_byte] = set_bit(screen[x2_byte], i)
+
+    return screen
+
+
+def set_bit(byte, bit):
+    """
+    Sets a particular bit in a byte to 1
+
+    :param int byte: A single integer value with 8 bits
+    :param int bit: The specific bit in the byte to set. This is relative
+    to the most-significant bit e.g. bit 0 sets 0x10000000.
+    :return: The byte with the specific bit set
+    """
+    return byte | (0b10000000 >> bit)
