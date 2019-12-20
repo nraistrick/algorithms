@@ -2,7 +2,7 @@ import unittest
 
 from algorithms import \
     find_sum_combinations, \
-    permutations
+    permutations, are_anagrams
 
 
 class TestAlgorithms(unittest.TestCase):
@@ -109,3 +109,20 @@ class TestAlgorithms(unittest.TestCase):
 
         actual = [p for p in permutations(values)]
         self.assertListEqual(expected, actual)
+
+    def test_are_anagrams(self):
+        self.assertTrue(are_anagrams("a", "a"))
+        self.assertTrue(are_anagrams("b", "b"))
+        self.assertTrue(are_anagrams("ab", "ba"))
+        self.assertTrue(are_anagrams("dc", "cd"))
+        self.assertTrue(are_anagrams("efg", "gfe"))
+        self.assertTrue(are_anagrams("gef", "feg"))
+        self.assertTrue(are_anagrams("abcdefghi", "bdefgciha"))
+
+        self.assertFalse(are_anagrams("a", "b"))
+        self.assertFalse(are_anagrams("d", "c"))
+        self.assertFalse(are_anagrams("ab", "aa"))
+        self.assertFalse(are_anagrams("cd", "af"))
+        self.assertFalse(are_anagrams("ghi", "jgi"))
+        self.assertFalse(are_anagrams("gef", "jeg"))
+        self.assertFalse(are_anagrams("abcdefghi", "bdefgxiha"))

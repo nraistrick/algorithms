@@ -1,6 +1,7 @@
 """
 Contains a selection of sorting and searching algorithms
 """
+from algorithms import are_anagrams
 
 
 def merge_two_sorted_lists(a, b):
@@ -31,3 +32,27 @@ def merge_two_sorted_lists(a, b):
                 break
 
     return a
+
+
+def sort_by_anagram(unsorted):
+    """
+    An algorithm to sort a list into groups of anagrams
+
+    * This implementation's runtime is O(ab)
+    * Its space complexity is O(1)
+
+    :param list[str] unsorted: An unsorted list of strings
+    :return: A sorted list of strings
+    :rtype: list[str]
+    """
+    i = 0
+    while i < len(unsorted):
+        j = i + 2
+        while j < len(unsorted):
+            if are_anagrams(unsorted[i], unsorted[j]):
+                unsorted[i + 1], unsorted[j] = unsorted[j], unsorted[i + 1]
+                break
+            j += 1
+        i += 1
+
+    return unsorted

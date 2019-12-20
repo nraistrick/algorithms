@@ -58,3 +58,18 @@ def permutations(entries):
             permutation = [entries[i]]
             permutation.extend(f)
             yield tuple(permutation)
+
+
+def are_anagrams(a, b):
+    """
+    Checks if two strings are anagrams of each other
+
+    :param str a: The first string
+    :param str b: The second string
+    :return: True if the strings are anagrams, False otherwise
+    :rtype: bool
+    """
+    if sorted(a) == sorted(b):
+        return True
+
+    return False
