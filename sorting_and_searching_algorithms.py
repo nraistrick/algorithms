@@ -1,6 +1,8 @@
 """
 Contains a selection of sorting and searching algorithms
 """
+import math
+
 from algorithms import are_anagrams
 
 
@@ -56,3 +58,42 @@ def sort_by_anagram(unsorted):
         i += 1
 
     return unsorted
+
+
+def search_in_rotated_array(rotated_array, search_value):
+    index = len(rotated_array) / 2
+    max_steps = math.log(len(rotated_array), 2) + 1
+    steps = 1
+    reverse = False
+
+    # We assume here the array is still ordered, but rotated.
+    # This check reverses the direction of the binary search to
+    # accommodate for the situation where the search value is
+    # on the opposite side of the array.
+    #
+    # e.g. search for 4 in [4, 5, 6, 1, 2, 3]. Our first move here
+    # would be to shift the index left instead of right (which would
+    # occur in a non-rotated binary tree).
+    if search_value > rotated_array[-1]:
+        reverse = True
+
+    while True:
+        if rotated_array[index] == search_value:
+            return index
+
+        index_shift = (len(rotated_array) - 1) / (steps * 2)
+
+        if reverse:
+            index_shift *= -1
+
+        if rotated_array[index] > search_value:
+            index -= index_shift
+        elif rotated_array[index] < search_value:
+            index += index_shift
+        else:
+            raise Exception("This should never happen")
+
+        if steps >= max_steps:
+            raise ValueError("Search value {0} not found".format(search_value))
+
+        steps += 1

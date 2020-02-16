@@ -1,6 +1,8 @@
 import unittest
 
-from sorting_and_searching_algorithms import merge_two_sorted_lists, sort_by_anagram
+from sorting_and_searching_algorithms import merge_two_sorted_lists,\
+    sort_by_anagram,\
+    search_in_rotated_array
 
 
 class TestSortingAndSearchingAlgorithms(unittest.TestCase):
@@ -47,3 +49,34 @@ class TestSortingAndSearchingAlgorithms(unittest.TestCase):
         unsorted = ["xyz", "yyy", "xzx", "yxz", "yyy", "xyz", "yyy"]
         expected = ["xyz", "yxz", "xyz", "yyy", "yyy", "yyy", "xzx"]
         self.assertListEqual(sort_by_anagram(unsorted), expected)
+
+    def test_search_in_rotated_array(self):
+        array = [1, 2, 3, 4, 5, 6]
+        search_value = 1
+        expected_index = 0
+        actual_index = search_in_rotated_array(array, search_value)
+        self.assertEqual(expected_index, actual_index)
+
+        array = [1, 2, 3, 4, 5, 6]
+        search_value = 5
+        expected_index = 4
+        actual_index = search_in_rotated_array(array, search_value)
+        self.assertEqual(expected_index, actual_index)
+
+        rotated_array = [4, 5, 6, 1, 2, 3]
+        search_value = 5
+        expected_index = 1
+        actual_index = search_in_rotated_array(rotated_array, search_value)
+        self.assertEqual(expected_index, actual_index)
+
+        rotated_array = [4, 5, 6, 1, 2, 3]
+        search_value = 3
+        expected_index = 5
+        actual_index = search_in_rotated_array(rotated_array, search_value)
+        self.assertEqual(expected_index, actual_index)
+
+        rotated_array = [6, 1, 2, 3, 4, 5]
+        search_value = 6
+        expected_index = 0
+        actual_index = search_in_rotated_array(rotated_array, search_value)
+        self.assertEqual(expected_index, actual_index)
